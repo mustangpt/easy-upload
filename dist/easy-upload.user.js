@@ -2,7 +2,7 @@
 // @name            EasyUpload PT一键转种
 // @name:en         EasyUpload - Trackers Transfer Tool
 // @namespace       https://github.com/techmovie/easy-upload
-// @version         7.0.10
+// @version         7.0.11
 // @author          birdplane
 // @description     一键转种，支持PT站点之间的种子转移。
 // @description:en  Transfer torrents between trackers with one click.
@@ -2125,20 +2125,79 @@
     Cinematik: {
       url: "https://cinematik.net",
       host: "cinematik.net",
-      siteType: "Cinematik",
+      siteType: "UNIT3D",
       icon: "data:image/png;base64,AAABAAEAEBAAAAAAAABoBQAAFgAAACgAAAAQAAAAIAAAAAEACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD///8ACAgIAA0NDQATExMAFBQUABsbGwAfHx8AJycnACoqKgAtLS0AMTExADU1NQA5OTkAPj4+AEFBQQBFRUUASEhIAE1NTQBRUVEAVVVVAFlZWQBdXV0AYWFhAGVlZQBpaWkAbm5uAHJycgB1dXUAenp6AH5+fgCCgoIAhoaGAImJiQCOjo4AkpKRAJSUlACdnZ0ApaWlAKioqACsrKwAsrKyALS0tAC8vLwAxcXFAM3NzQDa2toA6enoAO/u7QD+/v4AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA/ykgICAfHx8fICv///////8iJiAZGRkYGRgiKf//////IBsZFBQUFBQSIC4p/////yIkGxQQEhISEB0wLib///8gGRUQDQ0NDQ0SFBkfKf//ICIZDBQdEgwMCQwYGxv//x8dFQkZMC0fDQkJFRsZ//8fHxUFGDAwMCwYBxUbGP//Hx8YAhgwMDAwIgUVHxj//x0VDTEVMDAqFQUCEBUV//8dIhgxDSkVAzExMRUgFf//HRAJMTECMTExMTEMEBX//x0lGTExMTExMTExGSQU//8dEgwxMTExMTExMQwQFP//HSAVMTExMTExMTEVIBX//yYYGBUYGBgYGBUYGBQg/4Af//+AD///gAf/P4AD//+AAf85gAH//4AB//+AAf//gAH/P4AB++eAAb5fgAFc6YABvl+AAVc6gAE/v4AB/z8=",
       asSource: true,
-      asTarget: false,
-      uploadPath: "/upload.php",
-      seedDomSelector: "div.odiv_1 + table >tbody tr:nth-child(3n)",
+      asTarget: true,
+      uploadPath: "/torrents/create?category_id=1",
+      torrentDownloadLinkSelector: 'a[href*="/torrents/download/"]',
+      seedDomSelector: ".torrent__buttons+.panelV2",
       needDoubanInfo: true,
       search: {
-        path: "/browse.php",
+        path: "/torrents",
+        replaceKey: [
+          "tt",
+          ""
+        ],
         params: {
-          search: "{imdb}",
-          cat: 0,
-          incldead: 1,
-          srchdtls: 1
+          name: "{name}",
+          imdbId: "{imdb}",
+          sortField: "size"
+        }
+      },
+      name: {
+        selector: "#title"
+      },
+      description: {
+        selector: "#bbcode-description"
+      },
+      imdb: {
+        selector: "#autoimdb"
+      },
+      tmdb: {
+        selector: "#auto_tmdb_movie, #auto_tmdb_tv"
+      },
+      mediaInfo: {
+        selector: 'textarea[name="mediainfo"]'
+      },
+      anonymous: {
+        selector: "#anon"
+      },
+      torrent: {
+        selector: "#torrent"
+      },
+      category: {
+        selector: "#autocat",
+        map: {
+          movie: "1",
+          tv: "2",
+          tvPack: "2"
+        }
+      },
+      videoType: {
+        selector: "#autotype",
+        map: {
+          uhdbluray: "1",
+          bluray: "1",
+          remux: "2",
+          encode: "3",
+          web: "4",
+          hdtv: "6",
+          dvd: "1",
+          dvdrip: "3",
+          other: ""
+        }
+      },
+      resolution: {
+        selector: "#autores",
+        map: {
+          "4320p": "1",
+          "2160p": "2",
+          "1080p": "3",
+          "1080i": "4",
+          "720p": "5",
+          "576p": "6",
+          "480p": "8"
         }
       }
     },
@@ -11742,6 +11801,7 @@ ${imgs.join("\n")}
     HDSpace: "strip_tt",
     BeyondHD: "imdb_id",
     Blutopia: "unit3d",
+    Cinematik: "unit3d",
     fearnopeer: "unit3d",
     HDPOST: "unit3d",
     ACM: "unit3d",
@@ -20094,8 +20154,9 @@ ${descriptionData}`;
       this.info.imdbUrl = $$2(".meta__imdb a").attr("href");
     }
     extractMediaInfos() {
-      const mediaInfo = $$2(".bbcode-rendered code").text();
-      this.info.mediaInfos = [mediaInfo];
+      const mediaInfoSelector = this.isVideoTypeBluray() ? ".torrent-bdinfo code, .torrent-mediainfo-dump code, .bbcode-rendered code" : ".torrent-mediainfo-dump code, .bbcode-rendered code";
+      const mediaInfo = $$2(mediaInfoSelector).first().text();
+      this.info.mediaInfos = mediaInfo ? [mediaInfo] : [];
     }
     extractDescription() {
       const description = getFilterBBCode($$2(".panel__body.bbcode-rendered")[0]);
@@ -22230,7 +22291,7 @@ ${description}`;
     const imdbParam = getLocationSearchValueByKey("imdb");
     const nameParam = getLocationSearchValueByKey("name");
     if (imdbParam || nameParam) {
-      if (CURRENT_SITE_INFO.siteType === "UNIT3D" && CURRENT_SITE_NAME !== "Blutopia") {
+      if (CURRENT_SITE_INFO.siteType === "UNIT3D" && !["Blutopia", "Cinematik"].includes(CURRENT_SITE_NAME)) {
         filterBluTorrent(imdbParam, nameParam);
       } else if (CURRENT_SITE_NAME === "PTN") {
         $$2("#movieimdb").val(imdbParam);
@@ -29250,14 +29311,12 @@ ${yamlContent}\`\`\``).then(() => {
         siteType = "MTeam";
       } else if (CURRENT_SITE_INFO.siteType === "gazelle") {
         siteType = "Gazelle";
-      } else if (CURRENT_SITE_NAME === "Cinematik") {
-        siteType = "Cinematik";
       } else if (CURRENT_SITE_NAME === "SpeedApp") {
         siteType = "SpeedApp";
       } else if (CURRENT_SITE_NAME === "HDBits") {
         siteType = "HDBits";
       } else if (CURRENT_SITE_INFO.siteType.match(/NexusPHP|AvistaZ/) || (CURRENT_SITE_NAME == null ? void 0 : CURRENT_SITE_NAME.match(
-        /BeyondHD|TTG|Blutopia|HDPOST|Aither|ACM|KG|iTS|MDU|LST|fearnopeer/
+        /BeyondHD|TTG|Blutopia|Cinematik|HDPOST|Aither|ACM|KG|iTS|MDU|LST|fearnopeer/
       ))) {
         siteType = "NexusPHP";
       }
@@ -31163,7 +31222,9 @@ ${screenBBcodeArray.join("")}`
       return url;
     },
     handleUnit3dUrl: (url, category) => {
-      if (url.match(/hdpost|blutopia|fearnopeer|asiancinema|monikadesign|lst/)) {
+      if (url.match(
+        /hdpost|blutopia|cinematik|fearnopeer|asiancinema|monikadesign|lst/
+      )) {
         const catMap = {
           movie: "1",
           tv: "2",
@@ -31171,7 +31232,7 @@ ${screenBBcodeArray.join("")}`
           documentary: "1"
         };
         const path2 = catMap[category] || "1";
-        return url.replace(/\/upload\/\d+/, `/upload/${path2}`);
+        return url.replace(/\/upload\/\d+/, `/upload/${path2}`).replace(/([?&]category_id=)\d+/, `$1${path2}`);
       }
       return url;
     },
@@ -31191,7 +31252,7 @@ ${screenBBcodeArray.join("")}`
           audioBook: "14"
         };
         const path2 = catMap[category] || "1";
-        return url.replace(/\/upload\/\d+/, `/upload/${path2}`);
+        return url.replace(/\/upload\/\d+/, `/upload/${path2}`).replace(/([?&]category_id=)\d+/, `$1${path2}`);
       }
       return url;
     },

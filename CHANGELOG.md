@@ -1,3 +1,10 @@
+## [7.0.11](https://github.com/techmovie/easy-upload/compare/7.0.10...7.0.11) (2026-05-24)
+
+
+### Bug Fixes
+
+* update Cinematik UNIT3D support ([#405](https://github.com/techmovie/easy-upload/issues/405)) ([1fc0042](https://github.com/techmovie/easy-upload/commit/1fc00422ca8d034103bdf6c1ae57c4e5288fc509))
+
 ## [7.0.10](https://github.com/techmovie/easy-upload/compare/7.0.9...7.0.10) (2026-05-22)
 
 
