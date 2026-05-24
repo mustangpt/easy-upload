@@ -21,7 +21,7 @@ const fillSearchImdb = () => {
   if (imdbParam || nameParam) {
     if (
       CURRENT_SITE_INFO.siteType === 'UNIT3D' &&
-      CURRENT_SITE_NAME !== 'Blutopia'
+      !['Blutopia', 'Cinematik'].includes(CURRENT_SITE_NAME)
     ) {
       filterBluTorrent(imdbParam, nameParam);
     } else if (CURRENT_SITE_NAME === 'PTN') {

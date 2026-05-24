@@ -88,8 +88,11 @@ export abstract class Unite3DExtractor
   }
 
   protected extractMediaInfos() {
-    const mediaInfo = $('.bbcode-rendered code').text();
-    this.info.mediaInfos = [mediaInfo];
+    const mediaInfoSelector = this.isVideoTypeBluray()
+      ? '.torrent-bdinfo code, .torrent-mediainfo-dump code, .bbcode-rendered code'
+      : '.torrent-mediainfo-dump code, .bbcode-rendered code';
+    const mediaInfo = $(mediaInfoSelector).first().text();
+    this.info.mediaInfos = mediaInfo ? [mediaInfo] : [];
   }
 
   protected extractDescription() {

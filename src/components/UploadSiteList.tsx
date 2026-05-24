@@ -30,7 +30,11 @@ const SITE_URL_PROCESSORS = {
   },
 
   handleUnit3dUrl: (url: string, category: string) => {
-    if (url.match(/hdpost|blutopia|fearnopeer|asiancinema|monikadesign|lst/)) {
+    if (
+      url.match(
+        /hdpost|blutopia|cinematik|fearnopeer|asiancinema|monikadesign|lst/,
+      )
+    ) {
       const catMap = {
         movie: '1',
         tv: '2',
@@ -38,7 +42,9 @@ const SITE_URL_PROCESSORS = {
         documentary: '1',
       };
       const path = catMap[category as keyof typeof catMap] || '1';
-      return url.replace(/\/upload\/\d+/, `/upload/${path}`);
+      return url
+        .replace(/\/upload\/\d+/, `/upload/${path}`)
+        .replace(/([?&]category_id=)\d+/, `$1${path}`);
     }
     return url;
   },
@@ -59,7 +65,9 @@ const SITE_URL_PROCESSORS = {
         audioBook: '14',
       };
       const path = catMap[category as keyof typeof catMap] || '1';
-      return url.replace(/\/upload\/\d+/, `/upload/${path}`);
+      return url
+        .replace(/\/upload\/\d+/, `/upload/${path}`)
+        .replace(/([?&]category_id=)\d+/, `$1${path}`);
     }
     return url;
   },

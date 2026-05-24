@@ -17,6 +17,7 @@ export const siteIMDbTypeMap: Record<string, SiteIMDbType> = {
   HDSpace: SiteIMDbType.StripTT,
   BeyondHD: SiteIMDbType.IMDbID,
   Blutopia: SiteIMDbType.UNIT3D,
+  Cinematik: SiteIMDbType.UNIT3D,
   fearnopeer: SiteIMDbType.UNIT3D,
   HDPOST: SiteIMDbType.UNIT3D,
   ACM: SiteIMDbType.UNIT3D,

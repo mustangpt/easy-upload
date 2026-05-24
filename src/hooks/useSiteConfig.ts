@@ -11,8 +11,6 @@ export const useSiteConfig = () => {
       siteType = 'MTeam';
     } else if (CURRENT_SITE_INFO.siteType === 'gazelle') {
       siteType = 'Gazelle';
-    } else if (CURRENT_SITE_NAME === 'Cinematik') {
-      siteType = 'Cinematik';
     } else if (CURRENT_SITE_NAME === 'SpeedApp') {
       siteType = 'SpeedApp';
     } else if (CURRENT_SITE_NAME === 'HDBits') {
@@ -20,7 +18,7 @@ export const useSiteConfig = () => {
     } else if (
       CURRENT_SITE_INFO.siteType.match(/NexusPHP|AvistaZ/) ||
       CURRENT_SITE_NAME?.match(
-        /BeyondHD|TTG|Blutopia|HDPOST|Aither|ACM|KG|iTS|MDU|LST|fearnopeer/,
+        /BeyondHD|TTG|Blutopia|Cinematik|HDPOST|Aither|ACM|KG|iTS|MDU|LST|fearnopeer/,
       )
     ) {
       siteType = 'NexusPHP';

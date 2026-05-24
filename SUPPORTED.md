@@ -20,7 +20,7 @@
 |   CHDBits   |            ✅             |           ✅            |
 |    Carpt    |            ✅             |           ✅            |
 |   CinemaZ   |            ✅             |           ❌            |
-|  Cinematik  |            ✅             |           ❌            |
+|  Cinematik  |            ✅             |           ✅            |
 |  Concertos  |            ❌             |           ✅            |
 |  DicMusic   |            ✅             |           ✅            |
 |   DiscFan   |            ✅             |           ✅            |
