@@ -137,7 +137,7 @@ class ITS extends BaseFiller implements TargetFiller {
 
     template = this.fillComparisonsInTemplate(template, comparisons);
 
-    $('textarea[name="descr"]').val($t('数据加载中...'));
+    $('textarea[name="descr"]').val($t('common.loading'));
 
     try {
       template = await this.fillTemplateWithMetadata(template);

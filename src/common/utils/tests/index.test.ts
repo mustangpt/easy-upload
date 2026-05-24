@@ -6,6 +6,7 @@ import {
   GMFetch,
   htmlToBBCode,
   createFormData,
+  type I18nKey,
 } from '@/common/utils';
 import * as constants from '@/const';
 import type { SiteName } from '@/const';
@@ -14,6 +15,10 @@ import {
   TimeoutError,
   HTMLToBBCodeConverter,
 } from '../utils.helpers';
+
+// Tests intentionally mock i18n.json with fake keys to exercise fallbacks;
+// $tk lets us bypass the I18nKey type check while keeping it strict in app code.
+const $tk = (key: string) => $t(key as I18nKey);
 
 vi.mock(import('@/const'), async (importOriginal) => {
   const actual = await importOriginal();
@@ -121,25 +126,24 @@ describe('utils function', () => {
   describe('$t', () => {
     it('should return the translation of the given key in the current browser language', () => {
       vi.mocked(constants, { partial: true }).BROWSER_LANGUAGE = 'zh';
-      expect($t('hello')).toBe('你好');
-      expect($t('welcome')).toBe('欢迎');
+      expect($tk('hello')).toBe('你好');
+      expect($tk('welcome')).toBe('欢迎');
       vi.mocked(constants, { partial: true }).BROWSER_LANGUAGE = 'en';
-      expect($t('hello')).toBe('Hello');
-      expect($t('welcome')).toBe('Welcome');
+      expect($tk('hello')).toBe('Hello');
+      expect($tk('welcome')).toBe('Welcome');
     });
-    it('should return the key if the translation is not found', () => {
+    it('should return the key if neither the current language nor zh has it', () => {
       vi.mocked(constants, { partial: true }).BROWSER_LANGUAGE = 'en';
-      expect($t('not_found')).toBe('not_found');
-      expect($t('你好')).toBe('你好');
+      expect($tk('not_found')).toBe('not_found');
+      expect($tk('你好')).toBe('你好');
     });
-    it("should return the key if the translation is not found in the current browser language's translations", () => {
+    it('should fall back to en if the current browser language has no entry', () => {
       vi.mocked(constants, { partial: true }).BROWSER_LANGUAGE = 'jp';
-      expect($t('hello')).toBe('hello');
+      expect($tk('hello')).toBe('Hello');
     });
-    it('should return the key if BROWSER_LANGUAGE is empty', () => {
+    it('should fall back to en if BROWSER_LANGUAGE is empty', () => {
       vi.mocked(constants, { partial: true }).BROWSER_LANGUAGE = '';
-      expect($t('hello')).toBe('hello');
-      expect($t('你好')).toBe('你好');
+      expect($tk('hello')).toBe('Hello');
     });
   });
   describe('GMFetch', () => {

@@ -1,59 +1,62 @@
-豆瓣链接获取失败: 더우반 링크 얻기 실패
-豆瓣ID获取失败: 더우반 ID 아이디 얻기 실패
-获取豆瓣信息失败: 더우반 데이터 얻기 실패
-缺少IMDB信息: 누락된 IMDB 정보
-获取失败: 요청 실패
-获取成功: 데이터 요청 성공
-请求失败: 요청 실패
-上传失败，请重试: 업로드 실패, 다시 시도하세요.
-封面上传失败: 포스터 업로드 실패
-数据加载中...: 데이터 불러오기 중...
-获取图片列表失败: 이미지 목록 얻기 실패
-转换中...: 변환 중...
-转换成功！: 변환됨!
-获取中...: 요청 중...
-缺少豆瓣链接: 더우반 링크 누락
-本种子可能禁止转载，确定要继续转载么？: 이 토렌트의 전송이 금지될 수 있습니다, 계속하겠습니까?
-手动输入豆瓣链接: 더우반 링크 입력
-获取豆瓣简介: 더우반의 데이터 얻기
-获取豆瓣读书简介: 더우반 도서 데이터 얻기
-转缩略图: 썸네일로 변환
-快速检索: 빠른 검색
-一键群转: 일괄 전송
-快捷操作: 빠른 작업
-一键转种: 전송 대상
-转种站点启用: 전송 대상 섹션의 사이트 선택
-批量转种启用: 일괄 전송 버튼을 사용할 사이트 선택
-一键批量转发到以下选中的站点: 아래에서 선택한 사이트로 원클릭 일괄 전송하기
-站点搜索启用: 빠른 검색 섹션에서 사이트 선택
-图床配置: 이미지 호스트 설정
-如何获取？: 어떻게 얻나요?
-额外功能关闭: 추가 기능 끄기
-关闭转缩略图功能: 썸네일로 변환 버튼 제거하기
-关闭站点图标显示: 아이콘 제거하기
-关闭转存图片功能: 이미지 리호스팅 기능 끄기
-保存: 저장
-取消: 취소
-错误: 오류
-成功: 성공
-保存本地站点设置失败: 로컬 사이트 설정 저장 실패
-请先设置群转列表: 먼저 일괄 전송 목록 설정
-转种页面已打开，请前往对应页面操作: 전송 페이지가 열렸고, 해당 페이지로 이동하여 작업
-提示: 힌트
-转存截图: 다른 호스트에 스크린샷 업로드
-无需转存: 업로드할 필요 없음
-上传中，请稍候...: 업로드 중, 잠시만 기다려주세요.
-不显示致谢内容: 감사 내용을 포함하지 않음
-拷贝: 복사
-已拷贝: 복사됨
-不显示豆瓣按钮和豆瓣链接: 더우반 버튼 및 링크 필드 숨기기
-请填写正确链接: 올바른 링크를 입력하세요.
-批量检索: 일괄 검색
-同时打开多个搜索标签页: 여러 검색 탭 동시에 열기
-豆瓣配置: 더우반 구성
-关闭一键转种: 빠른 전송 비활성화
-关闭快速检索: 빠른검색 비활성화
-种子文件下载失败: 토렌트 파일 다운로드 실패
-请手动下载: 수동으로 다운로드해주세요
-配置已复制到剪贴板,请黏贴到创建的Github Issue中: 설정이 클립보드에 복사되었습니다. 생성한 Github Issue에 붙여넣으세요.
-获取页面配置: 페이지 설정 가져오기
+common.retrieveFailed: 가져오기 실패
+common.retrieveSuccess: 가져오기 성공
+common.loading: 데이터 불러오기 중...
+common.fetching: 가져오는 중...
+common.save: 저장
+common.cancel: 취소
+common.copy: 복사
+common.copied: 복사됨
+
+error.uploadFailed: 업로드 실패, 다시 시도하세요.
+error.noTransferNeeded: 다시 호스팅할 필요 없음
+error.imageUploadFailed: 이미지 업로드 실패
+error.imageListFetchFailed: 이미지 목록 가져오기 실패
+error.torrentDownloadFailed: 토렌트 파일 다운로드 실패
+error.torrentDownloadManual: 수동으로 다운로드해주세요
+
+app.quickSearch: 빠른 검색
+app.batchTransfer: 일괄 전송
+app.quickActions: 빠른 작업
+app.quickTransfer: 원클릭 전송
+app.batchSearch: 일괄 검색
+app.batchSearchDesc: 여러 검색 탭 동시에 열기
+app.exportPageConfig: 페이지 설정 내보내기
+app.configCopied: 설정이 클립보드에 복사되었습니다. 생성한 Github Issue에 붙여넣으세요.
+
+settings.targetSites: 전송 대상 사이트 활성화
+settings.batchSites: 일괄 전송 사이트 활성화
+settings.batchSitesDesc: 아래에서 선택한 사이트로 원클릭 일괄 전송하기
+settings.searchSites: 검색 사이트 활성화
+settings.featureSwitches: 추가 기능 끄기
+settings.errorSaveFailed: 로컬 사이트 설정 저장 실패
+settings.toastSaved: 설정이 저장되었습니다. 페이지가 새로고침됩니다.
+
+feature.disableQuickTransfer: 빠른 전송 비활성화
+feature.disableQuickSearch: 빠른 검색 비활성화
+feature.disableTransferImg: 썸네일 변환 기능 비활성화
+feature.disableRehostImg: 이미지 리호스팅 기능 끄기
+feature.disableSiteFavicon: 사이트 아이콘 숨기기
+feature.hideThanksQuote: 감사 내용 숨기기
+feature.hideDouban: 더우반 버튼 및 링크 필드 숨기기
+
+transfer.btnConvert: 썸네일로 변환
+transfer.btnConverting: 변환 중...
+transfer.toastSuccess: 변환됨!
+
+rehost.btnUpload: 스크린샷 다시 호스팅
+rehost.btnUploading: 업로드 중, 잠시만 기다려주세요.
+rehost.toastSuccess: 다시 호스팅 성공
+rehost.toastFailed: 다시 호스팅 실패
+
+douban.btnFetchIntro: 더우반 정보 가져오기
+douban.btnFetchBookIntro: 더우반 도서 정보 가져오기
+douban.errorMissingUrl: 더우반 링크 누락
+douban.errorInvalidUrl: 올바른 링크를 입력하세요.
+douban.placeholderManualUrl: 더우반 링크 입력
+
+siteList.confirmForbidden: 이 토렌트의 전송이 금지될 수 있습니다, 계속하겠습니까?
+siteList.errorNoTorrentInfo: 먼저 토렌트 정보를 불러오세요
+siteList.errorBatchNotConfigured: 먼저 일괄 전송 목록을 설정하세요
+siteList.errorOpenFailed: 업로드 페이지 열기 실패
+siteList.errorBatchFailed: 일괄 전송 실패
+siteList.toastBatchOpened: 전송 페이지가 열렸습니다. 해당 페이지로 이동하여 작업하세요.

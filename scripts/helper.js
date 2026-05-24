@@ -18,8 +18,8 @@ const notify = (title, message) => {
   });
 };
 const yamlToJSON = () => {
-  const yamlFiles = fs.readdirSync(yamlDir);
-  const i18nFiles = fs.readdirSync(i18nDir);
+  const yamlFiles = fs.readdirSync(yamlDir).filter((f) => f.endsWith('.yaml'));
+  const i18nFiles = fs.readdirSync(i18nDir).filter((f) => f.endsWith('.yaml'));
   const JSON_DATA = {
     PT_SITE: {},
   };

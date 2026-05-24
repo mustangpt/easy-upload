@@ -1,6 +1,7 @@
 import { useState, useCallback, useMemo } from 'preact/hooks';
 import { CURRENT_SITE_NAME } from '@/const';
 import { $t, getOriginalImgUrl, transferImgToCheveretoSite } from '@/common';
+import { I18nKey } from '@/common/utils/utils.types';
 import { useTorrentInfo } from '@/hooks/useTorrentInfo';
 import { ImgInfo } from '@/common/image/image.types';
 import { toast } from 'sonner';
@@ -19,10 +20,10 @@ const UploadImg = () => {
 
   const [selectHost, setSelectHost] = useState<ImageHostKey>('gifyu');
   const [btnDisable, setBtnDisable] = useState(false);
-  const [btnText, setBtnText] = useState('转存截图');
+  const [btnText, setBtnText] = useState<I18nKey>('rehost.btnUpload');
   const [canCopy, setCanCopy] = useState(false);
   const [screenBBCode, setScreenBBCode] = useState<string[]>([]);
-  const [copyText, setCopyText] = useState('拷贝');
+  const [copyText, setCopyText] = useState<I18nKey>('common.copy');
 
   const uploadImgClosed = useMemo(
     () => GM_getValue<boolean>('easy-upload.rehost-img-closed', false),
@@ -31,7 +32,7 @@ const UploadImg = () => {
 
   const handleCopyBBCode = useCallback(() => {
     GM_setClipboard(screenBBCode.join(''));
-    setCopyText('已拷贝');
+    setCopyText('common.copied');
   }, [screenBBCode]);
 
   const extractAndUploadImages = useCallback(async () => {
@@ -44,7 +45,7 @@ const UploadImg = () => {
       const originalImgUrls = await Promise.all(originalImgUrlPromises);
 
       if (originalImgUrls.length === 0) {
-        throw new Error($t('图片上传失败'));
+        throw new Error($t('error.imageUploadFailed'));
       }
 
       const imgData: ImgInfo[] = await (
@@ -52,7 +53,7 @@ const UploadImg = () => {
       )(originalImgUrls, IMAGE_HOSTS[selectHost].url);
 
       if (imgData.length === 0) {
-        throw new Error($t('图片上传失败'));
+        throw new Error($t('error.imageUploadFailed'));
       }
 
       return imgData;
@@ -105,10 +106,10 @@ const UploadImg = () => {
   const handleUploadScreenshots = useCallback(async () => {
     if (btnDisable) return;
 
-    setBtnText('上传中，请稍候...');
+    setBtnText('rehost.btnUploading');
     setBtnDisable(true);
     setCanCopy(false);
-    setCopyText('拷贝');
+    setCopyText('common.copy');
 
     try {
       const imgData = await extractAndUploadImages();
@@ -118,14 +119,14 @@ const UploadImg = () => {
       setScreenBBCode(screenBBcodeArray);
       setCanCopy(true);
 
-      toast.success($t('转存成功'));
+      toast.success($t('rehost.toastSuccess'));
     } catch (error) {
       const errorMessage =
-        error instanceof Error ? error.message : $t('转存失败');
+        error instanceof Error ? error.message : $t('rehost.toastFailed');
       toast.error(errorMessage);
       console.error('截图转存失败:', error);
     } finally {
-      setBtnText('转存截图');
+      setBtnText('rehost.btnUpload');
       setBtnDisable(false);
     }
   }, [btnDisable, extractAndUploadImages, updateTorrentWithNewImages]);

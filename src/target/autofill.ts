@@ -10,7 +10,7 @@ import $ from 'jquery';
 
 async function autoFillDoubanInfo(selfDom: JQuery, info: TorrentInfo.Info) {
   try {
-    $(selfDom).text($t('获取中...'));
+    $(selfDom).text($t('common.fetching'));
     const {
       imdbUrl,
       movieName,
@@ -19,7 +19,7 @@ async function autoFillDoubanInfo(selfDom: JQuery, info: TorrentInfo.Info) {
       title: torrentTitle,
     } = info;
     if (!imdbUrl && !doubanUrl) {
-      throw new Error($t('请填写正确链接'));
+      throw new Error($t('douban.errorInvalidUrl'));
     }
     let doubanLink = '';
     if (doubanUrl?.match(/movie\.douban\.com/)) {
@@ -72,7 +72,7 @@ async function autoFillDoubanInfo(selfDom: JQuery, info: TorrentInfo.Info) {
   } catch (error) {
     console.log((error as Error).message);
   } finally {
-    $(selfDom).text($t('获取豆瓣简介'));
+    $(selfDom).text($t('douban.btnFetchIntro'));
   }
 }
 export default (info: TorrentInfo.Info) => {
@@ -89,7 +89,7 @@ export default (info: TorrentInfo.Info) => {
     }
     if (selector) {
       selector.after(
-        `<span id="auto-fill-douban">${$t('获取豆瓣简介')}</span>`,
+        `<span id="auto-fill-douban">${$t('douban.btnFetchIntro')}</span>`,
       );
     }
     $('#auto-fill-douban').on('click', () => {

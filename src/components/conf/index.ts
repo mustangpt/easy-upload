@@ -1,64 +1,81 @@
-const SiteListConfig = [
+import { I18nKey } from '@/common/utils/utils.types';
+
+interface SiteListConfigItem {
+  name: string;
+  class: string;
+  title: I18nKey;
+  key: string;
+  des?: I18nKey;
+}
+
+interface FeatureSwitchItem {
+  name: string;
+  des: I18nKey;
+  type: string;
+  key: string;
+}
+
+const SiteListConfig: SiteListConfigItem[] = [
   {
     name: 'enabled-target-sites',
     class: 'target-sites-enable-list',
-    title: '转种站点启用',
+    title: 'settings.targetSites',
     key: 'targetEnabled',
   },
   {
     name: 'enabled-search-site-list',
     class: 'search-sites-enable-list',
-    title: '站点搜索启用',
+    title: 'settings.searchSites',
     key: 'searchEnabled',
   },
   {
     name: 'enabled-batch-seed-sites',
     class: 'batch-seed-sites-enable-list',
-    title: '批量转种启用',
+    title: 'settings.batchSites',
     key: 'batchEnabled',
-    des: '一键批量转发到以下选中的站点',
+    des: 'settings.batchSitesDesc',
   },
 ];
-const FeatureSwitchList = [
+const FeatureSwitchList: FeatureSwitchItem[] = [
   {
     name: 'quick-transfer-closed',
-    des: '关闭一键转种',
+    des: 'feature.disableQuickTransfer',
     type: 'checkbox',
     key: 'quickTransferClosed',
   },
   {
     name: 'quick-search-closed',
-    des: '关闭快速检索',
+    des: 'feature.disableQuickSearch',
     type: 'checkbox',
     key: 'quickSearchClosed',
   },
   {
     name: 'transfer-img-closed',
-    des: '关闭转缩略图功能',
+    des: 'feature.disableTransferImg',
     type: 'checkbox',
     key: 'transferImgClosed',
   },
   {
     name: 'rehost-img-closed',
-    des: '关闭转存图片功能',
+    des: 'feature.disableRehostImg',
     type: 'checkbox',
     key: 'rehostImgClosed',
   },
   {
     name: 'site-favicon-closed',
-    des: '关闭站点图标显示',
+    des: 'feature.disableSiteFavicon',
     type: 'checkbox',
     key: 'siteFaviconClosed',
   },
   {
     name: 'thanks-quote-closed',
-    des: '不显示致谢内容',
+    des: 'feature.hideThanksQuote',
     type: 'checkbox',
     key: 'thanksQuoteClosed',
   },
   {
     name: 'douban-closed',
-    des: '不显示豆瓣按钮和豆瓣链接',
+    des: 'feature.hideDouban',
     type: 'checkbox',
     key: 'doubanClosed',
   },

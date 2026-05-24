@@ -76,7 +76,9 @@ const getTorrentFileData = async (
     const base64 = await blobToBase64(blob);
     return base64;
   } catch (error) {
-    toast.error(`${$t('种子文件下载失败')} ${$t('请手动下载')}`);
+    toast.error(
+      `${$t('error.torrentDownloadFailed')} ${$t('error.torrentDownloadManual')}`,
+    );
     console.log(error);
     return '';
   }

@@ -1,9 +1,11 @@
 import i18nConfig from '@/i18n.json';
 
-export type SupportedLanguage = 'en' | 'ko';
+export type SupportedLanguage = 'zh' | 'en' | 'ko';
 
 export type TranslationKey<L extends SupportedLanguage> =
   keyof (typeof i18nConfig)[L];
+
+export type I18nKey = TranslationKey<'en'>;
 
 export interface RequestOptions<T = unknown> {
   method?: 'GET' | 'POST';

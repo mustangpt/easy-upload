@@ -90,9 +90,9 @@ const SearchList = () => {
             <li
               id="batch-search-btn"
               onClick={handleBatchSearch}
-              title={$t('同时打开多个搜索标签页')}
+              title={$t('app.batchSearchDesc')}
             >
-              {$t('批量检索')}
+              {$t('app.batchSearch')}
             </li>
           )}
         </ul>

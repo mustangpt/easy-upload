@@ -7,6 +7,7 @@ import {
   uploadToImgbox,
   uploadToHDB,
 } from '@/common';
+import { I18nKey } from '@/common/utils/utils.types';
 import { useTorrentInfo } from '@/hooks/useTorrentInfo';
 import { toast } from 'sonner';
 import { ImgInfo } from '@/common/image/image.types';
@@ -46,7 +47,7 @@ const Transfer = () => {
 
   const [imgHost, setImgHost] = useState<ImageHostKey>('imgbox');
   const [btnDisable, setBtnDisable] = useState(false);
-  const [btnText, setBtnText] = useState('转缩略图');
+  const [btnText, setBtnText] = useState<I18nKey>('transfer.btnConvert');
 
   const transferImgClosed = useMemo(
     () => GM_getValue<boolean>('easy-upload.transfer-img-closed'),
@@ -112,10 +113,10 @@ const Transfer = () => {
       const images = getAllImages();
 
       if (images.length < 1) {
-        throw new Error($t('获取图片列表失败'));
+        throw new Error($t('error.imageListFetchFailed'));
       }
 
-      setBtnText('转换中...');
+      setBtnText('transfer.btnConverting');
       setBtnDisable(true);
 
       const selectedHost = IMAGE_HOSTS[imgHost];
@@ -149,13 +150,13 @@ const Transfer = () => {
           description: updatedDescription,
         });
 
-        toast.success($t('转换成功！'));
+        toast.success($t('transfer.toastSuccess'));
       }
     } catch (error) {
       toast.error((error as Error).message);
       console.error('缩略图转换失败:', error);
     } finally {
-      setBtnText('转缩略图');
+      setBtnText('transfer.btnConvert');
       setBtnDisable(false);
     }
   }, [

@@ -47,7 +47,7 @@ const Container = () => {
 
   const TitleBar = () => (
     <h4>
-      {!quickTransferClosed && $t('一键转种')}
+      {!quickTransferClosed && $t('app.quickTransfer')}
       <Toaster position="top-right" richColors />
       <span id="easy-upload-setting" className="easy-upload-setting-btn" />
       <ConfigSvg

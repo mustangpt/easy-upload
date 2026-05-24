@@ -1,59 +1,62 @@
-豆瓣链接获取失败: Failed to retrieve Douban link
-豆瓣ID获取失败: Failed to retrieve Douban ID
-获取豆瓣信息失败: Failed to retrieve Douban information
-缺少IMDB信息: IMDB information missing
-获取失败: Retrieval failed
-获取成功: Retrieved successfully
-请求失败: Request failed
-上传失败，请重试: Upload failed, please try again
-封面上传失败: Poster upload failed
-数据加载中...: Loading data...
-获取图片列表失败: Failed to retrieve image list
-转换中...: Converting...
-转换成功！: Conversion successful!
-获取中...: Retrieving...
-缺少豆瓣链接: Douban link missing
-本种子可能禁止转载，确定要继续转载么？: This torrent may be prohibited from transfer. Are you sure you want to continue?
-手动输入豆瓣链接: Enter Douban link manually
-获取豆瓣简介: Retrieve Douban info
-获取豆瓣读书简介: Retrieve Douban Book info
-转缩略图: Convert to thumbnails
-快速检索: Quick search
-一键群转: Batch transfer
-快捷操作: Quick actions
-一键转种: One-click transfer
-转种站点启用: Enable sites for transfer
-批量转种启用: Enable sites for batch transfer
-一键批量转发到以下选中的站点: One-click batch transfer to selected sites below
-站点搜索启用: Enable sites for search
-图床配置: Image hosting settings
-如何获取？: How to obtain?
-额外功能关闭: Disable extra features
-关闭转缩略图功能: Disable thumbnail conversion
-关闭站点图标显示: Hide site icons
-关闭转存图片功能: Disable image rehosting
-保存: Save
-取消: Cancel
-错误: Error
-成功: Success
-保存本地站点设置失败: Failed to save local site settings
-请先设置群转列表: Please configure batch transfer list first
-转种页面已打开，请前往对应页面操作: Transfer pages opened. Please navigate to the corresponding pages to proceed
-提示: Tip
-转存截图: Rehost screenshots
-无需转存: No upload needed
-上传中，请稍候...: Uploading, please wait...
-不显示致谢内容: Hide acknowledgments
-拷贝: Copy
-已拷贝: Copied
-不显示豆瓣按钮和豆瓣链接: Hide Douban button and link field
-请填写正确链接: Please enter a valid link
-批量检索: Batch search
-同时打开多个搜索标签页: Open multiple search tabs simultaneously
-豆瓣配置: Douban configuration
-关闭一键转种: Disable quick transfer
-关闭快速检索: Disable quick search
-种子文件下载失败: Torrent file download failed
-请手动下载: Please download manually
-获取页面配置: Retrieve page configuration
-配置已复制到剪贴板,请黏贴到创建的Github Issue中: Configuration copied to clipboard. Please paste it into a new GitHub issue
+common.retrieveFailed: Fetch failed
+common.retrieveSuccess: Fetched successfully
+common.loading: Loading data...
+common.fetching: Loading...
+common.save: Save
+common.cancel: Cancel
+common.copy: Copy
+common.copied: Copied
+
+error.uploadFailed: Upload failed, please try again
+error.noTransferNeeded: No rehost needed
+error.imageUploadFailed: Image upload failed
+error.imageListFetchFailed: Failed to fetch image list
+error.torrentDownloadFailed: Torrent file download failed
+error.torrentDownloadManual: Please download manually
+
+app.quickSearch: Quick search
+app.batchTransfer: Batch transfer
+app.quickActions: Quick actions
+app.quickTransfer: One-click transfer
+app.batchSearch: Batch search
+app.batchSearchDesc: Open multiple search tabs simultaneously
+app.exportPageConfig: Export page config
+app.configCopied: Configuration copied to clipboard. Paste it into the GitHub issue you create.
+
+settings.targetSites: Enable sites for transfer
+settings.batchSites: Enable sites for batch transfer
+settings.batchSitesDesc: One-click batch transfer to selected sites below
+settings.searchSites: Enable sites for search
+settings.featureSwitches: Extra feature toggles
+settings.errorSaveFailed: Failed to save local site settings
+settings.toastSaved: Settings saved. The page will reload
+
+feature.disableQuickTransfer: Disable quick transfer
+feature.disableQuickSearch: Disable quick search
+feature.disableTransferImg: Disable thumbnail conversion
+feature.disableRehostImg: Disable image rehosting
+feature.disableSiteFavicon: Hide site icons
+feature.hideThanksQuote: Hide acknowledgments
+feature.hideDouban: Hide Douban button and link field
+
+transfer.btnConvert: Convert to thumbnails
+transfer.btnConverting: Converting...
+transfer.toastSuccess: Conversion successful!
+
+rehost.btnUpload: Rehost screenshots
+rehost.btnUploading: Uploading, please wait...
+rehost.toastSuccess: Rehosted successfully
+rehost.toastFailed: Rehost failed
+
+douban.btnFetchIntro: Fetch Douban info
+douban.btnFetchBookIntro: Fetch Douban book info
+douban.errorMissingUrl: Missing Douban link
+douban.errorInvalidUrl: Please enter a valid link
+douban.placeholderManualUrl: Enter Douban link
+
+siteList.confirmForbidden: This torrent may be prohibited from transfer. Are you sure you want to continue?
+siteList.errorNoTorrentInfo: Please load torrent info first
+siteList.errorBatchNotConfigured: Please configure batch transfer list first
+siteList.errorOpenFailed: Failed to open upload page
+siteList.errorBatchFailed: Batch transfer failed
+siteList.toastBatchOpened: Transfer tabs opened. Switch to each to continue.

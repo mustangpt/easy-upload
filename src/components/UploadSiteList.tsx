@@ -222,14 +222,12 @@ const UploadSiteList = () => {
     async (baseUrl: string, siteName: string) => {
       try {
         if (!torrentInfo) {
-          toast.error($t('请先获取种子信息'));
+          toast.error($t('siteList.errorNoTorrentInfo'));
           return false;
         }
 
         if (torrentInfo.isForbidden) {
-          const result = window.confirm(
-            $t('本种子可能禁止转载，确定要继续转载么？'),
-          );
+          const result = window.confirm($t('siteList.confirmForbidden'));
           if (!result) return false;
         }
 
@@ -243,7 +241,7 @@ const UploadSiteList = () => {
         return true;
       } catch (error) {
         console.error('处理站点点击失败:', error);
-        toast.error($t('打开上传页面失败'));
+        toast.error($t('siteList.errorOpenFailed'));
         return false;
       }
     },
@@ -258,7 +256,7 @@ const UploadSiteList = () => {
       );
 
       if (batchSeedSetting.length === 0) {
-        toast.error($t('请先设置群转列表'));
+        toast.error($t('siteList.errorBatchNotConfigured'));
         return;
       }
 
@@ -282,10 +280,10 @@ const UploadSiteList = () => {
         await new Promise((resolve) => setTimeout(resolve, 300));
       }
 
-      toast.success($t('转种页面已打开，请前往对应页面操作'));
+      toast.success($t('siteList.toastBatchOpened'));
     } catch (error) {
       console.error('批量转种失败:', error);
-      toast.error($t('批量转种失败'));
+      toast.error($t('siteList.errorBatchFailed'));
     }
   }, [torrentInfo, fetchTorrentData, processSiteUrl]);
 
@@ -327,7 +325,7 @@ const UploadSiteList = () => {
       {SORTED_SITE_KEYS.map((siteName) => renderSiteItem(siteName))}
       <li>
         <button id="batch-seed-btn" onClick={handleBatchSeed}>
-          {$t('一键群转')}
+          {$t('app.batchTransfer')}
         </button>
       </li>
     </ul>

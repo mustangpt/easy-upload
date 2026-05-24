@@ -12,12 +12,12 @@ export const HHLayout = ({
   <>
     <div class="font-bold leading-6">{children.title}</div>
     <div class="font-bold leading-6">{children.upload}</div>
-    <div class="font-bold leading-6">{$t('快捷操作')}</div>
+    <div class="font-bold leading-6">{$t('app.quickActions')}</div>
     <div class="font-bold leading-6">{children.functions}</div>
     {!quickSearchClosed && (
       <>
         <div class="font-bold leading-6" onClick={children.onSearchClick}>
-          {$t('快速检索')}
+          {$t('app.quickSearch')}
         </div>
         <div class="font-bold leading-6">{children.search}</div>
       </>
@@ -49,7 +49,7 @@ export const MTeamLayout = ({
             class="font-bold cursor-pointer"
             onClick={children.onSearchClick}
           >
-            {$t('快速检索')}
+            {$t('app.quickSearch')}
           </div>
         </label>
 
@@ -92,7 +92,7 @@ export const NexusPHPLayout = ({
       </tr>
       <tr>
         <td className={baseTitleClass.join(' ')}>
-          <h4>{$t('快捷操作')}</h4>
+          <h4>{$t('app.quickActions')}</h4>
         </td>
         <td className={baseContentClass.join(' ')}>{children.functions}</td>
       </tr>
@@ -100,7 +100,7 @@ export const NexusPHPLayout = ({
         <tr>
           <td className={baseTitleClass.join(' ')}>
             <h4 className="quick-search" onClick={children.onSearchClick}>
-              {$t('快速检索')}
+              {$t('app.quickSearch')}
             </h4>
           </td>
           <td className={baseContentClass.join(' ')}>{children.search}</td>
@@ -123,14 +123,14 @@ export const TikLayout = ({
       <td>{children.upload}</td>
     </tr>
     <tr>
-      <td className="rowhead">{$t('快捷操作')}</td>
+      <td className="rowhead">{$t('app.quickActions')}</td>
       <td>{children.functions}</td>
     </tr>
     {!quickSearchClosed && (
       <tr>
         <td className="rowhead">
           <h4 className="quick-search" onClick={children.onSearchClick}>
-            {$t('快速检索')}
+            {$t('app.quickSearch')}
           </h4>
         </td>
         <td>{children.search}</td>
@@ -159,12 +159,12 @@ export const SpeedAppLayout = ({
       </div>
     </div>
     <div className="custom-site">
-      <h4>{$t('快捷操作')}</h4>
+      <h4>{$t('app.quickActions')}</h4>
       {children.functions}
     </div>
     {!quickSearchClosed && (
       <div className="custom-site">
-        <h4 onClick={children.onSearchClick}>{$t('快速检索')}</h4>
+        <h4 onClick={children.onSearchClick}>{$t('app.quickSearch')}</h4>
         <div>{children.search}</div>
       </div>
     )}
@@ -195,7 +195,7 @@ export const GazelleLayout = ({
       {!quickSearchClosed && (
         <div class="ptp-title-wrapper">
           <h4 className="quick-search" onClick={children.onSearchClick}>
-            {$t('快速检索')}
+            {$t('app.quickSearch')}
           </h4>
           {children.search}
         </div>
@@ -228,7 +228,7 @@ export const HDBLayout = ({
       </tr>
       <tr class="hdb-tr">
         <td className={baseTitleClass.join(' ')}>
-          <h4>{$t('快捷操作')}</h4>
+          <h4>{$t('app.quickActions')}</h4>
         </td>
         <td className={baseContentClass.join(' ')}>{children.functions}</td>
       </tr>
@@ -236,7 +236,7 @@ export const HDBLayout = ({
         <tr class="hdb-tr">
           <td className={baseTitleClass.join(' ')}>
             <h4 className="quick-search" onClick={children.onSearchClick}>
-              {$t('快速检索')}
+              {$t('app.quickSearch')}
             </h4>
           </td>
           <td className={baseContentClass.join(' ')}>{children.search}</td>

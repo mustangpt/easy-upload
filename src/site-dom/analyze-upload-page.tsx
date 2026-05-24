@@ -47,7 +47,7 @@ const AnalyzeUploadPage = () => {
     navigator.clipboard
       .writeText(`\`\`\`yaml\n${yamlContent}\`\`\``)
       .then(() => {
-        toast.success($t('配置已复制到剪贴板,请黏贴到创建的Github Issue中'));
+        toast.success($t('app.configCopied'));
       });
   };
 
@@ -69,7 +69,7 @@ const AnalyzeUploadPage = () => {
           cursor: 'pointer',
         }}
       >
-        {`[EASY-UPLOAD]${$t('获取页面配置')}`}
+        {`[EASY-UPLOAD]${$t('app.exportPageConfig')}`}
       </button>
     </>
   );

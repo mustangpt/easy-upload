@@ -9,6 +9,7 @@ import {
   getSubTitleFromDoubanInfo,
   getDoubanTVItemData,
 } from '@/common';
+import { I18nKey } from '@/common/utils/utils.types';
 import { toast } from 'sonner';
 import $ from 'jquery';
 import { refineCategory } from '@/source/helper/index';
@@ -17,8 +18,10 @@ import { useTorrentInfo } from '@/hooks/useTorrentInfo';
 const Douban = () => {
   const { torrentInfo, updateTorrentInfo } = useTorrentInfo();
 
-  const [btnText, setBtnText] = useState('获取豆瓣简介');
-  const [bookBtnText, setBookBtnText] = useState('获取豆瓣读书简介');
+  const [btnText, setBtnText] = useState<I18nKey>('douban.btnFetchIntro');
+  const [bookBtnText, setBookBtnText] = useState<I18nKey>(
+    'douban.btnFetchBookIntro',
+  );
   const [btnDisable, setBtnDisable] = useState(false);
   const [searchValue, setSearchValue] = useState('');
 
@@ -50,7 +53,7 @@ const Douban = () => {
     if (btnDisable) return;
 
     try {
-      setBtnText('获取中...');
+      setBtnText('common.fetching');
       setBtnDisable(true);
 
       const scriptDoubanLink = $('.douban-dom').attr('douban-link');
@@ -98,7 +101,7 @@ const Douban = () => {
           );
 
           if (formatDoubanInfo.format) {
-            toast.success($t('获取成功'));
+            toast.success($t('common.retrieveSuccess'));
             handleDoubanInfoUpdate(formatDoubanInfo.format);
             const subtitle = getSubTitleFromDoubanInfo(
               formatDoubanInfo,
@@ -109,14 +112,14 @@ const Douban = () => {
             });
           }
         } else {
-          toast.success($t('获取成功'));
+          toast.success($t('common.retrieveSuccess'));
         }
       }
     } catch (error) {
       console.error('获取豆瓣数据失败:', error);
-      toast.error($t('获取失败'));
+      toast.error($t('common.retrieveFailed'));
     } finally {
-      setBtnText('获取豆瓣简介');
+      setBtnText('douban.btnFetchIntro');
       setBtnDisable(false);
     }
   }, [
@@ -132,12 +135,12 @@ const Douban = () => {
     const doubanUrl = torrentInfo.doubanUrl || searchValue;
 
     if (!doubanUrl) {
-      toast.error($t('缺少豆瓣链接'));
+      toast.error($t('douban.errorMissingUrl'));
       return;
     }
 
     try {
-      setBookBtnText('获取中...');
+      setBookBtnText('common.fetching');
       setBtnDisable(true);
       setSearchValue(doubanUrl);
 
@@ -151,14 +154,14 @@ const Douban = () => {
           doubanBookInfo: data,
         });
 
-        toast.success($t('获取成功'));
+        toast.success($t('common.retrieveSuccess'));
       }
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       console.error('获取豆瓣图书数据失败:', error);
       toast.error(error.message);
     } finally {
-      setBookBtnText('获取豆瓣读书简介');
+      setBookBtnText('douban.btnFetchBookIntro');
       setBtnDisable(false);
     }
   }, [btnDisable, searchValue, torrentInfo.doubanUrl, updateTorrentInfo]);
@@ -170,7 +173,7 @@ const Douban = () => {
         <div className="douban-section">
           <input
             type="text"
-            placeholder={$t('手动输入豆瓣链接')}
+            placeholder={$t('douban.placeholderManualUrl')}
             value={searchValue}
             onChange={(e) =>
               setSearchValue((e.target as HTMLInputElement).value)

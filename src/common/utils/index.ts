@@ -6,7 +6,7 @@ import {
 import i18nConfig from '@/i18n.json';
 import {
   SupportedLanguage,
-  TranslationKey,
+  I18nKey,
   RequestOptions,
 } from '@/common/utils/utils.types';
 import {
@@ -66,13 +66,13 @@ export const convertSizeStringToBytes = (size: string) => {
  * @param {string} key
  * @returns {*} The translation of the given key
  */
-export const $t = <L extends SupportedLanguage>(key: string) => {
-  const languageKey = BROWSER_LANGUAGE as L;
-  const translations = i18nConfig[languageKey];
-  if (!translations) {
-    return key;
-  }
-  return key in translations ? translations[key as TranslationKey<L>] : key;
+export const $t = (key: I18nKey): string => {
+  const lang = BROWSER_LANGUAGE as SupportedLanguage;
+  const dict = i18nConfig[lang] as Record<string, string> | undefined;
+  if (dict?.[key]) return dict[key];
+  // Fall back to English so unsupported locales still render UI.
+  const fallback = (i18nConfig.en as Record<string, string>)[key];
+  return fallback ?? key;
 };
 
 /**

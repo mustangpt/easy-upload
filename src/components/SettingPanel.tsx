@@ -1,6 +1,7 @@
 import { useState, useCallback, useMemo, useEffect } from 'preact/hooks';
 import { JSX } from 'preact';
 import { $t } from '@/common';
+import { I18nKey } from '@/common/utils/utils.types';
 import { PT_SITE, SORTED_SITE_KEYS, SiteName } from '@/const';
 import { FeatureSwitchList, SiteListConfig } from './conf';
 import { toast } from 'sonner';
@@ -14,7 +15,7 @@ interface SiteConfig {
 
 interface FeatureConfig {
   name: string;
-  des: string;
+  des: I18nKey;
   type: string;
   checked: boolean;
 }
@@ -80,11 +81,11 @@ const SettingPanel = ({
         GM_setValue(`easy-upload.${feature.name}`, !!feature.checked);
       });
 
-      toast.success($t('设置已保存，页面将重新加载'));
+      toast.success($t('settings.toastSaved'));
       setTimeout(() => window.location.reload(), 1000);
     } catch (error) {
       console.error('保存设置失败:', error);
-      toast.error($t('保存本地站点设置失败'));
+      toast.error($t('settings.errorSaveFailed'));
     }
   }, [siteList, featureList]);
 
@@ -183,14 +184,14 @@ const SettingPanel = ({
         <div className="panel-content">
           {renderSiteConfigSections}
 
-          <h3>{$t('额外功能关闭')}</h3>
+          <h3>{$t('settings.featureSwitches')}</h3>
           {renderFeatureSwitches}
         </div>
 
         <div className="confirm-btns">
-          <button onClick={closePanel}>{$t('取消')}</button>
+          <button onClick={closePanel}>{$t('common.cancel')}</button>
           <button onClick={saveSetting} className="save-setting-btn">
-            {$t('保存')}
+            {$t('common.save')}
           </button>
         </div>
       </div>

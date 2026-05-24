@@ -1,3 +1,5 @@
+import { I18nKey } from '@/common/utils/utils.types';
+
 export const CONFIG = {
   URLS: {
     IMGBOX: 'https://imgbox.com',
@@ -7,8 +9,8 @@ export const CONFIG = {
     IMGBB: 'https://imgbb.com/json',
   },
   ERROR_MESSAGES: {
-    UPLOAD_FAILED: '上传失败，请重试',
-    NO_TRANSFER_NEEDED: '无需转存',
+    UPLOAD_FAILED: 'error.uploadFailed' as I18nKey,
+    NO_TRANSFER_NEEDED: 'error.noTransferNeeded' as I18nKey,
   },
   FILTER_IMGS_NAMES: [
     'poster.jpg',
