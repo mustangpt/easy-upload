@@ -11,10 +11,7 @@ export default [
   {
     ignores: ['**/dist'],
   },
-  ...neostandard({
-    ts: true,
-    filesTs: ['**/*.ts', '**/*.tsx'],
-  }),
+  ...neostandard(),
 
   js.configs.recommended,
 

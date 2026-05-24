@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+/// <reference types="tampermonkey" />
 
 declare namespace TorrentInfo {
   interface MediaTags {
@@ -425,6 +426,7 @@ declare namespace MusicJson {
 }
 
 declare module '*.svg';
+declare module '*.css';
 
 declare function Remaster(): void;
 declare function AutoFill(): void;
