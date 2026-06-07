@@ -1,3 +1,10 @@
+## [7.0.13](https://github.com/xheiop/easy-upload/compare/7.0.12...7.0.13) (2026-06-07)
+
+
+### Bug Fixes
+
+* update viteconfig ([e9b1ee2](https://github.com/xheiop/easy-upload/commit/e9b1ee20888ab13f49e303e18b31340cd25ef9c5))
+
 ## [7.0.12](https://github.com/xheiop/easy-upload/compare/7.0.11...7.0.12) (2026-05-24)
 
 
