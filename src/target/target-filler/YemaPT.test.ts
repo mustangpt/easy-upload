@@ -55,6 +55,16 @@ describe('YemaPT target filler helpers', () => {
     ).toBe('简介');
   });
 
+  it('ignores null media info entries when cleaning description', () => {
+    const mediaInfo = 'General\nComplete name: demo.mkv';
+    const malformedInfo = {
+      description: `简介\n[quote]${mediaInfo}[/quote]`,
+      mediaInfos: [null, undefined, '   ', mediaInfo],
+    } as unknown as Parameters<typeof prepareYemaPTDescription>[0];
+
+    expect(prepareYemaPTDescription(malformedInfo)).toBe('简介');
+  });
+
   it('gets season number from common torrent title patterns', () => {
     expect(getYemaPTSeason('Show.Name.S02E03.1080p.WEB-DL')).toBe(2);
     expect(getYemaPTSeason('Show Name Season 03 2160p WEB-DL')).toBe(3);
