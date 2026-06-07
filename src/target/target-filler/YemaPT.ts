@@ -26,7 +26,11 @@ export const prepareYemaPTDescription = (
   let description = filterEmptyTags(info.description || '').replace(/^\s+/, '');
 
   info.mediaInfos?.forEach((mediaInfo) => {
-    description = description.replace(mediaInfo.trim(), '');
+    const normalizedMediaInfo =
+      typeof mediaInfo === 'string' ? mediaInfo.trim() : '';
+    if (!normalizedMediaInfo) return;
+
+    description = description.replace(normalizedMediaInfo, '');
   });
 
   description = description.replace(
