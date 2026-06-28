@@ -2,7 +2,7 @@
 // @name            EasyUpload PT一键转种
 // @name:en         EasyUpload - Trackers Transfer Tool
 // @namespace       https://github.com/xheiop/easy-upload
-// @version         7.0.14
+// @version         7.0.15
 // @author          birdplane
 // @description     一键转种，支持PT站点之间的种子转移。
 // @description:en  Transfer torrents between trackers with one click.
@@ -7037,6 +7037,22 @@ DVD runtime(s): ${+hour < 10 ? `0${hour}` : hour}:${minute}`;
 		}
 	};
 	var registry = new ExtractorRegistry();
+	var getDoubanUrlFromText = (text) => {
+		const match = text.match(/https?:\/\/((?:movie|book)\.)?douban\.com\/subject\/(\d+)/i);
+		if (!match) return "";
+		return `https://${match[1] === "book." ? "book.douban.com" : "movie.douban.com"}/subject/${match[2]}/`;
+	};
+	var getIMDbUrlFromText = (text) => {
+		var _text$match, _text$match2;
+		const id = ((_text$match = text.match(/https?:\/\/(?:www\.)?imdb\.com\/title\/(tt\d{5,13})/i)) === null || _text$match === void 0 ? void 0 : _text$match[1]) || ((_text$match2 = text.match(/\b(tt\d{5,13})\b/i)) === null || _text$match2 === void 0 ? void 0 : _text$match2[1]) || "";
+		return id ? `https://www.imdb.com/title/${id.toLowerCase()}/` : "";
+	};
+	var applyExternalIdFallbacks = (info) => {
+		const text = `${info.description || ""}\n${info.doubanInfo || ""}`;
+		if (!info.doubanUrl) info.doubanUrl = getDoubanUrlFromText(text);
+		if (!info.imdbUrl) info.imdbUrl = getIMDbUrlFromText(text);
+		return info;
+	};
 	var CONFIG = {
 		NEXUS_FILTER_KEYWORDS: [
 			"温馨提示",
@@ -11808,7 +11824,7 @@ DVD runtime(s): ${+hour < 10 ? `0${hour}` : hour}:${minute}`;
 			return null;
 		}
 		try {
-			return await extractor.extract();
+			return applyExternalIdFallbacks(await extractor.extract());
 		} catch (error) {
 			console.log("Error extracting torrent info", error);
 			return null;
