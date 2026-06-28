@@ -1,5 +1,6 @@
 import { CURRENT_SITE_INFO, CURRENT_SITE_NAME } from '@/const';
 import { registry } from './info-extractors/registry';
+import { applyExternalIdFallbacks } from './info-fallback';
 
 import './info-extractors/nexusphp';
 import './info-extractors/PTer';
@@ -46,7 +47,7 @@ export async function getTorrentInfo(): Promise<TorrentInfo.Info | null> {
   }
 
   try {
-    return await extractor.extract();
+    return applyExternalIdFallbacks(await extractor.extract());
   } catch (error) {
     console.log('Error extracting torrent info', error);
     return null;
