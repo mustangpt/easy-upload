@@ -7,18 +7,23 @@ import {
 import { BaseFiller } from './base/base-filler';
 import { registry, TargetFiller } from './registry';
 
-type ReactFiberNode = {
-  child?: ReactFiberNode;
-  sibling?: ReactFiberNode;
-  stateNode?: {
-    state?: unknown;
-    context?: {
-      setFieldsValue?: (fields: Record<string, unknown>) => void;
-    };
-  };
+type YemaPTFormInstance = {
+  setFieldsValue?: (fields: Record<string, unknown>) => void;
 };
 
-type ReactComponentInstance = NonNullable<ReactFiberNode['stateNode']>;
+type UploadFile = {
+  uid: string;
+  name: string;
+  size?: number;
+  type?: string;
+  status?: 'error' | 'done' | 'uploading' | 'removed';
+  originFileObj?: File;
+};
+
+type TorrentAddPageReadyEventDetail = {
+  dispatchCount: number;
+  form?: YemaPTFormInstance;
+};
 
 export const prepareYemaPTDescription = (
   info: Pick<TorrentInfo.Info, 'description' | 'mediaInfos'>,
@@ -142,59 +147,26 @@ class YemaPT extends BaseFiller implements TargetFiller {
     this.info = info;
     window.addEventListener(
       'torrentAddPageReady',
-      () => {
-        this.fillYemaPTForm();
-      },
+      ((event: CustomEvent<TorrentAddPageReadyEventDetail>) => {
+        console.log('YemaPT torrentAddPageReady', event.detail.dispatchCount);
+        this.fillYemaPTForm(event.detail.form);
+      }) as EventListener,
       { once: true },
     );
   }
 
-  private fillYemaPTForm(): void {
-    const instance = this.getAntFormInstance();
-    const setFieldsValue = instance?.context?.setFieldsValue;
+  private fillYemaPTForm(form?: YemaPTFormInstance): void {
+    const setFieldsValue = form?.setFieldsValue?.bind(form);
     if (!setFieldsValue || !this.info) {
       console.warn('YemaPT form instance was not found');
       return;
     }
 
-    setFieldsValue.call(instance.context, this.buildFields());
-    this.fillTorrentFileByForm(setFieldsValue.bind(instance.context));
-    this.fillSelects();
-  }
-
-  private getAntFormInstance() {
-    const antForm = document.querySelector('form.ant-form');
-    if (!antForm) return null;
-
-    const fiber = this.getReactFiberNode(antForm);
-    return this.getReactComponentInstance(fiber);
-  }
-
-  private getReactFiberNode(element: Element): ReactFiberNode | null {
-    for (const key in element) {
-      if (key.startsWith('__reactFiber')) {
-        return (element as unknown as Record<string, ReactFiberNode>)[key];
-      }
-    }
-    return null;
-  }
-
-  private getReactComponentInstance(
-    fiberNode: ReactFiberNode | null,
-  ): ReactComponentInstance | null {
-    if (fiberNode?.stateNode?.state !== undefined) {
-      return fiberNode.stateNode;
-    }
-
-    let child = fiberNode?.child;
-    while (child) {
-      const instance: ReactComponentInstance | null =
-        this.getReactComponentInstance(child);
-      if (instance) return instance;
-      child = child.sibling;
-    }
-
-    return null;
+    setFieldsValue({
+      ...this.buildFields(),
+      ...this.buildSelectFields(),
+    });
+    this.fillTorrentFileByForm(setFieldsValue);
   }
 
   private buildFields(): Record<string, unknown> {
@@ -239,29 +211,36 @@ class YemaPT extends BaseFiller implements TargetFiller {
     const torrentFileName = title
       .replace(/^\[.*?\](\.| )?/, '')
       .replace(/\s/g, '.');
-    const file = new File([blob], `${torrentFileName}.torrent`, {
+    const firstFile = new File([blob], `${torrentFileName}.torrent`, {
       type: 'application/x-bittorrent',
-    }) as File & { originFileObj?: File };
+    });
 
-    file.originFileObj = file;
+    const file: UploadFile = {
+      uid: `easy-upload-${firstFile.name}-${firstFile.lastModified}`,
+      name: firstFile.name,
+      size: firstFile.size,
+      type: firstFile.type,
+      status: 'done',
+      originFileObj: firstFile,
+    };
     setFieldsValue({ fileList: [file] });
   }
 
-  private async fillSelects(): Promise<void> {
-    const sequence = [
-      ['medium', 0, this.getVideoType()],
-      ['standard', 1, this.getResolution()],
-      ['codec', 2, this.getVideoCodec()],
-      ['audiocodec', 3, this.getAudioCodec()],
-      ['regionList', 4, this.getRegions()],
-      ['team', 5, this.getTeam()],
-      ['tagList', 6, this.getTags()],
-      ['categoryId', 7, this.getCategory()],
-    ] as const;
+  private buildSelectFields(): Record<string, unknown> {
+    const fields: Record<string, unknown> = {
+      medium: this.getVideoType(),
+      standard: this.getResolution(),
+      codec: this.getVideoCodec(),
+      audiocodec: this.getAudioCodec(),
+      regionList: this.getRegions(),
+      team: this.getTeam(),
+      categoryId: this.getCategory(),
+    };
 
-    for (const [id, index, value] of sequence) {
-      await this.selectDropdownOption(id, index, value);
-    }
+    const tags = this.getTags();
+    if (tags.length > 0) fields.tagList = tags;
+
+    return fields;
   }
 
   private getCategory(): string {
@@ -349,72 +328,6 @@ class YemaPT extends BaseFiller implements TargetFiller {
     if (/E\d+/i.test(title)) result.push('连载中');
     if (/complete|S\d{2}(?!E\d{2})/i.test(title)) result.push('完结');
     return result;
-  }
-
-  private async selectDropdownOption(
-    id: string,
-    index: number,
-    targetTitle: string | string[],
-  ): Promise<void> {
-    if (
-      !targetTitle ||
-      (Array.isArray(targetTitle) && targetTitle.length === 0)
-    ) {
-      return;
-    }
-
-    const element = document.getElementById(id);
-    if (!element) return;
-
-    element.dispatchEvent(new MouseEvent('mousedown', { bubbles: true }));
-    const listHolder = await this.waitForListHolder(index);
-    if (!listHolder) return;
-
-    const titles = Array.isArray(targetTitle) ? targetTitle : [targetTitle];
-    for (const title of titles) {
-      await this.clickOption(listHolder, title);
-    }
-  }
-
-  private async waitForListHolder(index: number): Promise<Element | null> {
-    for (let i = 0; i < 10; i += 1) {
-      await this.sleep(200);
-      const listHolder = document.querySelectorAll('.rc-virtual-list-holder')[
-        index
-      ];
-      if (listHolder) return listHolder;
-    }
-    return null;
-  }
-
-  private async clickOption(listHolder: Element, title: string): Promise<void> {
-    const findAndClick = () => {
-      const option = Array.from(
-        listHolder.querySelectorAll<HTMLElement>('.ant-select-item-option'),
-      ).find((item) => item.getAttribute('title') === title);
-      if (!option) return false;
-      option.click();
-      return true;
-    };
-
-    if (findAndClick()) return;
-
-    const holder = listHolder as HTMLElement;
-    let currentScroll = 0;
-    let totalHeight = holder.scrollHeight;
-    holder.scrollTop = 0;
-
-    while (currentScroll < totalHeight) {
-      holder.scrollTop += 100;
-      currentScroll += 100;
-      await this.sleep(100);
-      if (findAndClick()) return;
-      totalHeight = holder.scrollHeight;
-    }
-  }
-
-  private sleep(ms: number): Promise<void> {
-    return new Promise((resolve) => setTimeout(resolve, ms));
   }
 }
 
