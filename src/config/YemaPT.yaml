@@ -25,18 +25,23 @@ mediaInfo:
 category:
   selector: "#categoryId"
   map:
-    movie: "电影"
-    tv: "剧集"
-    tvPack: "剧集"
-    cartoon: "动漫"
-    documentary: "纪录片"
-    variety: "综艺"
-    sport: "体育"
-    app: "软件"
-    game: "游戏"
-    ebook: "书籍"
-    music: "音乐"
-    concert: "MV/演唱会"
+    movie: 4
+    tv: 5
+    tvPack: 5
+    variety: 13
+    cartoon: 14
+    documentary: 15
+    concert: 16
+    sport: 17
+    app: 3
+    game: 10
+    ebook: 12
+    music: 8
+    audiobook: 9
+    onlineCourse: 21
+    magazine: 22
+    comics: 22
+    other: 22
 videoType:
   selector: "#medium"
   map:

@@ -55,6 +55,27 @@ export const getYemaPTSeason = (title: string): number | null => {
     : null;
 };
 
+export const getYemaPTCategory = (
+  category: string,
+  categoryMap: Record<string, unknown> = {},
+): unknown => {
+  return categoryMap[category] ?? 0;
+};
+
+export const isYemaPTOptionMatch = (
+  optionTitle: string,
+  optionText: string,
+  targetTitle: string,
+): boolean => {
+  const target = targetTitle.trim();
+  const title = optionTitle.trim();
+  const text = optionText.trim();
+
+  if (!target) return false;
+  if (title === target || text === target) return true;
+  return title.includes(target) || text.includes(target);
+};
+
 const convertQuoteToMarkdown = (quote: string, title = ''): string => {
   const normalized = quote.trim();
   if (!normalized) return '';
@@ -220,6 +241,8 @@ class YemaPT extends BaseFiller implements TargetFiller {
     const season = getYemaPTSeason(info.title);
     if (season) fields.season = season;
 
+    fields.categoryId = this.getCategory();
+
     return fields;
   }
 
@@ -256,7 +279,6 @@ class YemaPT extends BaseFiller implements TargetFiller {
       ['regionList', 4, this.getRegions()],
       ['team', 5, this.getTeam()],
       ['tagList', 6, this.getTags()],
-      ['categoryId', 7, this.getCategory()],
     ] as const;
 
     for (const [id, index, value] of sequence) {
@@ -264,9 +286,9 @@ class YemaPT extends BaseFiller implements TargetFiller {
     }
   }
 
-  private getCategory(): string {
+  private getCategory(): unknown {
     const map = this.siteInfo.category?.map ?? {};
-    return (map[this.info!.category] as string) || '未分类';
+    return getYemaPTCategory(this.info!.category, map);
   }
 
   private getVideoType(): string {
@@ -390,8 +412,16 @@ class YemaPT extends BaseFiller implements TargetFiller {
   private async clickOption(listHolder: Element, title: string): Promise<void> {
     const findAndClick = () => {
       const option = Array.from(
-        listHolder.querySelectorAll<HTMLElement>('.ant-select-item-option'),
-      ).find((item) => item.getAttribute('title') === title);
+        listHolder.querySelectorAll<HTMLElement>(
+          '.ant-select-item-option, .ant-cascader-menu-item',
+        ),
+      ).find((item) =>
+        isYemaPTOptionMatch(
+          item.getAttribute('title') || '',
+          item.textContent || '',
+          title,
+        ),
+      );
       if (!option) return false;
       option.click();
       return true;
