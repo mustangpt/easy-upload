@@ -62,6 +62,26 @@ export const getYemaPTCategory = (
   return categoryMap[category] ?? 0;
 };
 
+export const getYemaPTMappedOption = (
+  key: string | undefined,
+  optionMap: Record<string, unknown> = {},
+  fallback: string = '999',
+): string => {
+  if (!key) return fallback;
+
+  const option = optionMap[key];
+  return typeof option === 'string' ? option : fallback;
+};
+
+export const getYemaPTMappedOptions = (
+  keys: string[],
+  optionMap: Record<string, unknown> = {},
+): string[] => {
+  return keys
+    .map((key) => optionMap[key])
+    .filter((option): option is string => typeof option === 'string');
+};
+
 export const isYemaPTOptionMatch = (
   optionTitle: string,
   optionText: string,
@@ -178,13 +198,13 @@ class YemaPT extends BaseFiller implements TargetFiller {
       return;
     }
 
-    setFieldsValue.call(instance.context, this.buildFields());
+    const fields = this.buildFields();
+    setFieldsValue.call(instance.context, fields);
     this.fillTorrentFileByForm(setFieldsValue.bind(instance.context));
-    this.fillSelects();
   }
 
   private getAntFormInstance() {
-    const antForm = document.querySelector('form.ant-form');
+    const antForm = document.querySelector('#torrent-add-form, form.ant-form');
     if (!antForm) return null;
 
     const fiber = this.getReactFiberNode(antForm);
@@ -242,6 +262,13 @@ class YemaPT extends BaseFiller implements TargetFiller {
     if (season) fields.season = season;
 
     fields.categoryId = this.getCategory();
+    fields.medium = this.getVideoType();
+    fields.standard = this.getResolution();
+    fields.codec = this.getVideoCodec();
+    fields.audiocodec = this.getAudioCodec();
+    fields.regionList = this.getRegions();
+    fields.team = this.getTeam();
+    fields.tagList = this.getTags();
 
     return fields;
   }
@@ -270,22 +297,6 @@ class YemaPT extends BaseFiller implements TargetFiller {
     setFieldsValue({ fileList: [file] });
   }
 
-  private async fillSelects(): Promise<void> {
-    const sequence = [
-      ['medium', 0, this.getVideoType()],
-      ['standard', 1, this.getResolution()],
-      ['codec', 2, this.getVideoCodec()],
-      ['audiocodec', 3, this.getAudioCodec()],
-      ['regionList', 4, this.getRegions()],
-      ['team', 5, this.getTeam()],
-      ['tagList', 6, this.getTags()],
-    ] as const;
-
-    for (const [id, index, value] of sequence) {
-      await this.selectDropdownOption(id, index, value);
-    }
-  }
-
   private getCategory(): unknown {
     const map = this.siteInfo.category?.map ?? {};
     return getYemaPTCategory(this.info!.category, map);
@@ -293,12 +304,12 @@ class YemaPT extends BaseFiller implements TargetFiller {
 
   private getVideoType(): string {
     const { videoType } = this.info!;
-    return (this.siteInfo.videoType?.map?.[videoType] as string) || 'Other';
+    return getYemaPTMappedOption(videoType, this.siteInfo.videoType?.map);
   }
 
   private getResolution(): string {
     const { resolution } = this.info!;
-    return (this.siteInfo.resolution?.map?.[resolution] as string) || 'Other';
+    return getYemaPTMappedOption(resolution, this.siteInfo.resolution?.map);
   }
 
   private getVideoCodec(): string {
@@ -307,144 +318,65 @@ class YemaPT extends BaseFiller implements TargetFiller {
       /^(h264|x264)$/i.test(videoCodec) &&
       /^(bluray|uhdbluray)$/i.test(videoType)
     ) {
-      return 'Bluray(AVC)';
+      return getYemaPTMappedOption('blurayAvc', this.siteInfo.videoCodec?.map);
     }
     if (
       /^(hevc|h265|x265)$/i.test(videoCodec) &&
       /^(bluray|uhdbluray)$/i.test(videoType)
     ) {
-      return 'Bluray(HEVC)';
+      return getYemaPTMappedOption('blurayHevc', this.siteInfo.videoCodec?.map);
     }
-    return (this.siteInfo.videoCodec?.map?.[videoCodec] as string) || 'Other';
+    return getYemaPTMappedOption(videoCodec, this.siteInfo.videoCodec?.map);
   }
 
   private getAudioCodec(): string {
     const { audioCodec = '', title } = this.info!;
     if (/^(atmos)$/i.test(audioCodec)) {
-      return /DDP|DD\+|E-?AC-?3/i.test(title) ? 'E-AC3 Atmos' : 'TrueHD Atmos';
+      return /DDP|DD\+|E-?AC-?3/i.test(title)
+        ? getYemaPTMappedOption('eac3Atmos', this.siteInfo.audioCodec?.map)
+        : getYemaPTMappedOption('truehdAtmos', this.siteInfo.audioCodec?.map);
     }
     if (/^truehd$/i.test(audioCodec) && /Atmos/i.test(title)) {
-      return 'TrueHD Atmos';
+      return getYemaPTMappedOption(
+        'truehdAtmos',
+        this.siteInfo.audioCodec?.map,
+      );
     }
     if (/^(ac3|dd|dd\+)$/i.test(audioCodec) && /DDP|DD\+/i.test(title)) {
       return /Atmos/i.test(title)
-        ? 'E-AC3 Atmos'
-        : 'E-AC3 (Dolby Digital Plus)';
+        ? getYemaPTMappedOption('eac3Atmos', this.siteInfo.audioCodec?.map)
+        : getYemaPTMappedOption('dd+', this.siteInfo.audioCodec?.map);
     }
-    return (this.siteInfo.audioCodec?.map?.[audioCodec] as string) || 'Other';
+    return getYemaPTMappedOption(audioCodec, this.siteInfo.audioCodec?.map);
   }
 
   private getRegions(): string[] {
     const area = this.info!.area;
-    const areaMap: Record<string, string> = {
-      CN: 'CN(中国)',
-      HK: 'HK/CN(香港)',
-      TW: 'TW/CN(台湾)',
-      JP: 'JP(日本)',
-      KR: 'KR(韩国)',
-      US: 'US(美国)',
-      EU: 'EU(欧洲)',
-    };
-
-    return area && areaMap[area] ? [areaMap[area]] : ['Other'];
+    const regionMap = this.siteInfo.region?.map ?? {};
+    return [getYemaPTMappedOption(area, regionMap)];
   }
 
   private getTeam(): string {
     const teamName = getTeamName(this.info!.title)?.toLowerCase();
-    if (!teamName) return 'Other';
-    return (this.siteInfo.team?.map?.[teamName] as string) || 'Other';
+    return getYemaPTMappedOption(teamName, this.siteInfo.team?.map);
   }
 
   private getTags(): string[] {
     const { tags, title } = this.info!;
-    const result: string[] = [];
-    if (tags.chinese_audio) result.push('国语');
-    if (tags.chinese_subtitle) result.push('中字');
-    if (tags.cantonese_audio) result.push('粤语');
-    if (tags.hdr10) result.push('HDR10');
-    if (tags.hdr10_plus) result.push('HDR10+');
-    if (tags.dolby_vision) result.push('杜比视界');
-    if (tags.dolby_atmos) result.push('杜比全景声(Atmos)');
-    if (tags.dts_x) result.push('DTS-X');
-    if (tags.diy) result.push('DIY');
-    if (tags.exclusive) result.push('首发');
-    if (/E\d+/i.test(title)) result.push('连载中');
-    if (/complete|S\d{2}(?!E\d{2})/i.test(title)) result.push('完结');
-    return result;
-  }
-
-  private async selectDropdownOption(
-    id: string,
-    index: number,
-    targetTitle: string | string[],
-  ): Promise<void> {
-    if (
-      !targetTitle ||
-      (Array.isArray(targetTitle) && targetTitle.length === 0)
-    ) {
-      return;
-    }
-
-    const element = document.getElementById(id);
-    if (!element) return;
-
-    element.dispatchEvent(new MouseEvent('mousedown', { bubbles: true }));
-    const listHolder = await this.waitForListHolder(index);
-    if (!listHolder) return;
-
-    const titles = Array.isArray(targetTitle) ? targetTitle : [targetTitle];
-    for (const title of titles) {
-      await this.clickOption(listHolder, title);
-    }
-  }
-
-  private async waitForListHolder(index: number): Promise<Element | null> {
-    for (let i = 0; i < 10; i += 1) {
-      await this.sleep(200);
-      const listHolder = document.querySelectorAll('.rc-virtual-list-holder')[
-        index
-      ];
-      if (listHolder) return listHolder;
-    }
-    return null;
-  }
-
-  private async clickOption(listHolder: Element, title: string): Promise<void> {
-    const findAndClick = () => {
-      const option = Array.from(
-        listHolder.querySelectorAll<HTMLElement>(
-          '.ant-select-item-option, .ant-cascader-menu-item',
-        ),
-      ).find((item) =>
-        isYemaPTOptionMatch(
-          item.getAttribute('title') || '',
-          item.textContent || '',
-          title,
-        ),
-      );
-      if (!option) return false;
-      option.click();
-      return true;
-    };
-
-    if (findAndClick()) return;
-
-    const holder = listHolder as HTMLElement;
-    let currentScroll = 0;
-    let totalHeight = holder.scrollHeight;
-    holder.scrollTop = 0;
-
-    while (currentScroll < totalHeight) {
-      holder.scrollTop += 100;
-      currentScroll += 100;
-      await this.sleep(100);
-      if (findAndClick()) return;
-      totalHeight = holder.scrollHeight;
-    }
-  }
-
-  private sleep(ms: number): Promise<void> {
-    return new Promise((resolve) => setTimeout(resolve, ms));
+    const tagKeys: string[] = [];
+    if (tags.chinese_audio) tagKeys.push('chinese_audio');
+    if (tags.chinese_subtitle) tagKeys.push('chinese_subtitle');
+    if (tags.cantonese_audio) tagKeys.push('cantonese_audio');
+    if (tags.hdr10) tagKeys.push('hdr10');
+    if (tags.hdr10_plus) tagKeys.push('hdr10_plus');
+    if (tags.dolby_vision) tagKeys.push('dolby_vision');
+    if (tags.dolby_atmos) tagKeys.push('dolby_atmos');
+    if (tags.dts_x) tagKeys.push('dts_x');
+    if (tags.diy) tagKeys.push('diy');
+    if (tags.exclusive) tagKeys.push('exclusive');
+    if (/E\d+/i.test(title)) tagKeys.push('serializing');
+    if (/complete|S\d{2}(?!E\d{2})/i.test(title)) tagKeys.push('completed');
+    return getYemaPTMappedOptions(tagKeys, this.siteInfo.tags);
   }
 }
 

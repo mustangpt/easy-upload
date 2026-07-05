@@ -2,6 +2,8 @@ import { describe, expect, it } from 'vitest';
 import {
   bbcodeToMarkdown,
   getYemaPTCategory,
+  getYemaPTMappedOption,
+  getYemaPTMappedOptions,
   getYemaPTSeason,
   isYemaPTOptionMatch,
   prepareYemaPTDescription,
@@ -97,6 +99,21 @@ describe('YemaPT target filler helpers', () => {
     expect(getYemaPTCategory('audiobook', categoryMap)).toBe(9);
     expect(getYemaPTCategory('onlineCourse', categoryMap)).toBe(21);
     expect(getYemaPTCategory('other', categoryMap)).toBe(22);
+  });
+
+  it('maps YemaPT option keys to upload option values', () => {
+    expect(getYemaPTMappedOption('web', { web: '1' })).toBe('1');
+    expect(getYemaPTMappedOption('missing', { web: '1' })).toBe('999');
+    expect(getYemaPTMappedOption(undefined, { web: '1' })).toBe('999');
+  });
+
+  it('maps multi-select YemaPT option keys and skips unknown values', () => {
+    expect(
+      getYemaPTMappedOptions(['chinese_audio', 'unknown', 'hdr10'], {
+        chinese_audio: '5',
+        hdr10: '9',
+      }),
+    ).toEqual(['5', '9']);
   });
 
   it('matches YemaPT dropdown options by title or visible text', () => {

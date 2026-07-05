@@ -176,6 +176,7 @@ declare namespace Site {
     audioCodec: SelectorMap;
     videoType: SelectorMap;
     resolution: SelectorMap;
+    region?: SelectorMap;
     team: SelectorMap;
   }
 }
