@@ -25,6 +25,158 @@ type TorrentAddPageReadyEventDetail = {
   form?: YemaPTFormInstance;
 };
 
+type YemaPTOptionValue = string | number;
+type YemaPTSelectOptionKey =
+  | 'category'
+  | 'medium'
+  | 'standard'
+  | 'codec'
+  | 'audiocodec'
+  | 'region'
+  | 'team'
+  | 'tag';
+
+const YEMAPT_SELECT_VALUE_MAP: Record<
+  YemaPTSelectOptionKey,
+  Record<string, YemaPTOptionValue>
+> = {
+  category: {
+    未分类: 0,
+    软件: 3,
+    电影: 4,
+    剧集: 5,
+    短剧: 6,
+    音乐: 8,
+    广播剧: 9,
+    游戏: 10,
+    书籍: 12,
+    综艺: 13,
+    动漫: 14,
+    纪录片: 15,
+    'MV/演唱会': 16,
+    体育: 17,
+    其他: 22,
+  },
+  medium: {
+    'Web-DL/WebRip': '1',
+    'Blu-ray (1080p Complete)': '2',
+    'Blu-ray UHD (4K Complete)': '3',
+    Remux: '4',
+    'Rip/Encode': '5',
+    'HDTV/TV Cap': '6',
+    DVDRip: '7',
+    DVDrip: '7',
+    'Audio CD/Vinyl': '8',
+    'DVD (Complete/ISO)': '9',
+    Other: '999',
+  },
+  standard: {
+    '720i': '1',
+    '720p': '2',
+    '1080i': '3',
+    '1080p': '4',
+    SD: '5',
+    '2K/1440p': '6',
+    '4K/2160p': '7',
+    '8K': '8',
+    Other: '999',
+  },
+  codec: {
+    'H.264/AVC': '1',
+    'H.265/HEVC': '2',
+    'VC-1(Blu-ray)': '3',
+    'Bluray(AVC)': '4',
+    'Bluray(HEVC)': '5',
+    'MPEG-2(Blu-ray/DVD)': '6',
+    'Xvid/DivX': '7',
+    AV1: '8',
+    VP9: '9',
+    'H.266/VVC': '10',
+    Other: '999',
+  },
+  audiocodec: {
+    AAC: '1',
+    'AC3 (Dolby Digital)': '2',
+    DTS: '3',
+    'DTS-HD MA': '4',
+    'E-AC3 (Dolby Digital Plus)': '5',
+    'E-AC3 Atmos': '6',
+    TrueHD: '7',
+    'TrueHD Atmos': '8',
+    LPCM: '9',
+    FLAC: '10',
+    APE: '11',
+    MP3: '12',
+    OGG: '13',
+    Opus: '14',
+    Other: '999',
+  },
+  region: {
+    'CN(中国)': '1',
+    'HK/CN(香港)': '2',
+    'TW/CN(台湾)': '3',
+    'US(美国)': '4',
+    'EU(欧洲)': '5',
+    'JP(日本)': '6',
+    'KR(韩国)': '7',
+    Other: '999',
+  },
+  team: {
+    OurBits: '1',
+    BtsHD: '2',
+    BtsTV: '3',
+    HDChina: '4',
+    CMCT: '5',
+    HHWEB: '6',
+    FRDS: '7',
+    MTeam: '8',
+    QHstudio: '9',
+    UBits: '10',
+    Other: '999',
+  },
+  tag: {
+    禁转: '1',
+    首发: '2',
+    官组: '3',
+    DIY: '4',
+    国语: '5',
+    中字: '6',
+    粤语: '7',
+    英字: '8',
+    HDR10: '9',
+    杜比视界: '10',
+    连载中: '11',
+    完结: '12',
+    多国字幕: '13',
+    'HDR10+': '14',
+    '杜比全景声(Atmos)': '15',
+    'DTS-X': '16',
+    '5.1/7.1声道': '17',
+    完结全集: '18',
+    'SP/剧场版/OVA': '19',
+  },
+};
+
+export const getYemaPTOptionValue = (
+  key: YemaPTSelectOptionKey,
+  labelOrValue: YemaPTOptionValue,
+): YemaPTOptionValue => {
+  const optionMap = YEMAPT_SELECT_VALUE_MAP[key];
+  const normalizedValue = String(labelOrValue);
+
+  if (Object.prototype.hasOwnProperty.call(optionMap, normalizedValue)) {
+    return optionMap[normalizedValue];
+  }
+
+  return labelOrValue;
+};
+
+const getYemaPTOptionValues = (
+  key: YemaPTSelectOptionKey,
+  labelsOrValues: YemaPTOptionValue[],
+): YemaPTOptionValue[] =>
+  labelsOrValues.map((labelOrValue) => getYemaPTOptionValue(key, labelOrValue));
+
 export const prepareYemaPTDescription = (
   info: Pick<TorrentInfo.Info, 'description' | 'mediaInfos'>,
 ): string => {
@@ -228,17 +380,17 @@ class YemaPT extends BaseFiller implements TargetFiller {
 
   private buildSelectFields(): Record<string, unknown> {
     const fields: Record<string, unknown> = {
-      medium: this.getVideoType(),
-      standard: this.getResolution(),
-      codec: this.getVideoCodec(),
-      audiocodec: this.getAudioCodec(),
-      regionList: this.getRegions(),
-      team: this.getTeam(),
-      categoryId: this.getCategory(),
+      medium: getYemaPTOptionValue('medium', this.getVideoType()),
+      standard: getYemaPTOptionValue('standard', this.getResolution()),
+      codec: getYemaPTOptionValue('codec', this.getVideoCodec()),
+      audiocodec: getYemaPTOptionValue('audiocodec', this.getAudioCodec()),
+      regionList: getYemaPTOptionValues('region', this.getRegions()),
+      team: getYemaPTOptionValue('team', this.getTeam()),
+      categoryId: getYemaPTOptionValue('category', this.getCategory()),
     };
 
     const tags = this.getTags();
-    if (tags.length > 0) fields.tagList = tags;
+    if (tags.length > 0) fields.tagList = getYemaPTOptionValues('tag', tags);
 
     return fields;
   }

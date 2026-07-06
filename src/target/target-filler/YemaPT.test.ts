@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import {
   bbcodeToMarkdown,
+  getYemaPTOptionValue,
   getYemaPTSeason,
   prepareYemaPTDescription,
 } from './YemaPT';
@@ -70,5 +71,17 @@ describe('YemaPT target filler helpers', () => {
     expect(getYemaPTSeason('Show Name Season 03 2160p WEB-DL')).toBe(3);
     expect(getYemaPTSeason('剧名 第4季 1080p WEB-DL')).toBe(4);
     expect(getYemaPTSeason('Movie.Name.2024.1080p.BluRay')).toBeNull();
+  });
+
+  it('maps YemaPT select labels to real option values', () => {
+    expect(getYemaPTOptionValue('category', '电影')).toBe(4);
+    expect(getYemaPTOptionValue('medium', 'Web-DL/WebRip')).toBe('1');
+    expect(getYemaPTOptionValue('standard', '4K/2160p')).toBe('7');
+    expect(getYemaPTOptionValue('codec', 'Bluray(HEVC)')).toBe('5');
+    expect(getYemaPTOptionValue('audiocodec', 'E-AC3 Atmos')).toBe('6');
+    expect(getYemaPTOptionValue('region', 'CN(中国)')).toBe('1');
+    expect(getYemaPTOptionValue('team', 'MTeam')).toBe('8');
+    expect(getYemaPTOptionValue('tag', '杜比全景声(Atmos)')).toBe('15');
+    expect(getYemaPTOptionValue('medium', '1')).toBe('1');
   });
 });
