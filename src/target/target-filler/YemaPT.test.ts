@@ -1,6 +1,8 @@
 import { describe, expect, it } from 'vitest';
 import {
   bbcodeToMarkdown,
+  buildYemaPTScreenshotList,
+  getYemaPTPicture,
   getYemaPTOptionValue,
   getYemaPTSeason,
   prepareYemaPTDescription,
@@ -66,6 +68,25 @@ describe('YemaPT target filler helpers', () => {
     expect(prepareYemaPTDescription(malformedInfo)).toBe('简介');
   });
 
+  it('removes known screenshot images from long description', () => {
+    const screenshot = 'https://example.com/screenshot.jpg';
+    const otherImage = 'https://example.com/poster.jpg';
+
+    expect(
+      prepareYemaPTDescription({
+        description: [
+          '简介',
+          `[img=350x350]${screenshot}[/img]`,
+          `[url=https://example.com][img]${screenshot}[/img][/url]`,
+          screenshot,
+          `[img]${otherImage}[/img]`,
+        ].join('\n'),
+        mediaInfos: [],
+        screenshots: [screenshot],
+      }),
+    ).toBe(`简介\n[img]${otherImage}[/img]`);
+  });
+
   it('gets season number from common torrent title patterns', () => {
     expect(getYemaPTSeason('Show.Name.S02E03.1080p.WEB-DL')).toBe(2);
     expect(getYemaPTSeason('Show Name Season 03 2160p WEB-DL')).toBe(3);
@@ -83,5 +104,38 @@ describe('YemaPT target filler helpers', () => {
     expect(getYemaPTOptionValue('team', 'MTeam')).toBe('8');
     expect(getYemaPTOptionValue('tag', '杜比全景声(Atmos)')).toBe('15');
     expect(getYemaPTOptionValue('medium', '1')).toBe('1');
+  });
+
+  it('does not use a known screenshot as YemaPT picture fallback', () => {
+    const screenshot = 'https://example.com/screenshot.jpg';
+
+    expect(
+      getYemaPTPicture({
+        poster: '',
+        description: `[img]${screenshot}[/img]`,
+        screenshots: [screenshot],
+      } as TorrentInfo.Info),
+    ).toBe('');
+  });
+
+  it('uses explicit poster before YemaPT picture fallback', () => {
+    expect(
+      getYemaPTPicture({
+        poster: 'https://example.com/poster.jpg',
+        description: '[img]https://example.com/screenshot.jpg[/img]',
+        screenshots: ['https://example.com/screenshot.jpg'],
+      } as TorrentInfo.Info),
+    ).toBe('https://example.com/poster.jpg');
+  });
+
+  it('builds YemaPT screenshotList from screenshot urls', () => {
+    expect(
+      buildYemaPTScreenshotList([
+        ' https://example.com/a.jpg ',
+        '',
+        '   ',
+        'https://example.com/b.jpg',
+      ]),
+    ).toEqual(['https://example.com/a.jpg', 'https://example.com/b.jpg']);
   });
 });

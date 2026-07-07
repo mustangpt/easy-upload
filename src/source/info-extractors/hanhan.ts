@@ -113,10 +113,16 @@ class HanHanExtractor extends NexusPHPExtractor {
   }
 
   extractPoster() {
-    this.info.poster = $('#cover-content')?.attr('src') ?? '';
+    const coverContent = $('#cover-content');
+    const poster =
+      coverContent.attr('src') ||
+      coverContent.find('img').first().attr('src') ||
+      '';
+    this.info.poster = poster;
   }
 
   async extractDescription() {
+    this.extractPoster();
     this.extractDoubanUrl();
     this.extractImdbUrl();
     this.extractMetaInfo();
