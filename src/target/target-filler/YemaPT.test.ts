@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import {
   bbcodeToMarkdown,
+  getYemaPTPicture,
   getYemaPTOptionValue,
   getYemaPTSeason,
   prepareYemaPTDescription,
@@ -83,5 +84,27 @@ describe('YemaPT target filler helpers', () => {
     expect(getYemaPTOptionValue('team', 'MTeam')).toBe('8');
     expect(getYemaPTOptionValue('tag', '杜比全景声(Atmos)')).toBe('15');
     expect(getYemaPTOptionValue('medium', '1')).toBe('1');
+  });
+
+  it('does not use a known screenshot as YemaPT picture fallback', () => {
+    const screenshot = 'https://example.com/screenshot.jpg';
+
+    expect(
+      getYemaPTPicture({
+        poster: '',
+        description: `[img]${screenshot}[/img]`,
+        screenshots: [screenshot],
+      } as TorrentInfo.Info),
+    ).toBe('');
+  });
+
+  it('uses explicit poster before YemaPT picture fallback', () => {
+    expect(
+      getYemaPTPicture({
+        poster: 'https://example.com/poster.jpg',
+        description: '[img]https://example.com/screenshot.jpg[/img]',
+        screenshots: ['https://example.com/screenshot.jpg'],
+      } as TorrentInfo.Info),
+    ).toBe('https://example.com/poster.jpg');
   });
 });

@@ -177,6 +177,24 @@ const getYemaPTOptionValues = (
 ): YemaPTOptionValue[] =>
   labelsOrValues.map((labelOrValue) => getYemaPTOptionValue(key, labelOrValue));
 
+export const getYemaPTPicture = (
+  info: Pick<TorrentInfo.Info, 'poster' | 'description' | 'screenshots'>,
+): string => {
+  const { poster, description, screenshots = [] } = info;
+  if (poster) return poster;
+
+  const firstDescriptionImage =
+    description.match(/\[img\]([^[]+?)\[\/img\]/i)?.[1]?.trim() || '';
+  if (!firstDescriptionImage) return '';
+
+  const normalizedScreenshots = screenshots.map((screenshot) =>
+    screenshot.trim(),
+  );
+  return normalizedScreenshots.includes(firstDescriptionImage)
+    ? ''
+    : firstDescriptionImage;
+};
+
 export const prepareYemaPTDescription = (
   info: Pick<TorrentInfo.Info, 'description' | 'mediaInfos'>,
 ): string => {
@@ -329,7 +347,7 @@ class YemaPT extends BaseFiller implements TargetFiller {
       longDesc: bbcodeToMarkdown(prepareYemaPTDescription(info)),
     };
 
-    const picture = this.getPoster();
+    const picture = getYemaPTPicture(info);
     if (picture) fields.picture = picture;
 
     const doubanId = info.doubanUrl?.match(/subject\/(\d+)/)?.[1];
@@ -345,12 +363,6 @@ class YemaPT extends BaseFiller implements TargetFiller {
     if (season) fields.season = season;
 
     return fields;
-  }
-
-  private getPoster(): string {
-    const { poster, description } = this.info!;
-    if (poster) return poster;
-    return description.match(/\[img\]([^[]+?)\[\/img\]/i)?.[1]?.trim() || '';
   }
 
   private fillTorrentFileByForm(
