@@ -195,8 +195,39 @@ export const getYemaPTPicture = (
     : firstDescriptionImage;
 };
 
+const escapeRegExp = (text: string): string =>
+  text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+
+const removeYemaPTScreenshotImages = (
+  description: string,
+  screenshots: TorrentInfo.Info['screenshots'] = [],
+): string => {
+  let result = description;
+  buildYemaPTScreenshotList(screenshots).forEach((screenshot) => {
+    const escapedScreenshot = escapeRegExp(screenshot);
+    const wrappedScreenshotImage =
+      `\\[url=[^\\]]*?\\][ \\t]*` +
+      `\\[img(?:=[^\\]]*?)?\\][ \\t]*${escapedScreenshot}[ \\t]*` +
+      `\\[\\/img\\][ \\t]*\\[\\/url\\]`;
+    const screenshotImage =
+      `\\[img(?:=[^\\]]*?)?\\][ \\t]*${escapedScreenshot}[ \\t]*` +
+      `\\[\\/img\\]`;
+    result = result
+      .replace(
+        new RegExp(`^[ \\t]*${wrappedScreenshotImage}[ \\t]*\\n?`, 'gim'),
+        '',
+      )
+      .replace(new RegExp(`^[ \\t]*${screenshotImage}[ \\t]*\\n?`, 'gim'), '')
+      .replace(new RegExp(`^[ \\t]*${escapedScreenshot}[ \\t]*\\n?`, 'gim'), '')
+      .replace(new RegExp(wrappedScreenshotImage, 'gi'), '')
+      .replace(new RegExp(screenshotImage, 'gi'), '');
+  });
+  return result;
+};
+
 export const prepareYemaPTDescription = (
-  info: Pick<TorrentInfo.Info, 'description' | 'mediaInfos'>,
+  info: Pick<TorrentInfo.Info, 'description' | 'mediaInfos'> &
+    Partial<Pick<TorrentInfo.Info, 'screenshots'>>,
 ): string => {
   let description = filterEmptyTags(info.description || '').replace(/^\s+/, '');
 
@@ -213,8 +244,17 @@ export const prepareYemaPTDescription = (
     '',
   );
 
+  description = removeYemaPTScreenshotImages(description, info.screenshots);
+
   return filterEmptyTags(description).trim();
 };
+
+export const buildYemaPTScreenshotList = (
+  screenshots: TorrentInfo.Info['screenshots'] = [],
+): string[] =>
+  screenshots
+    .map((screenshot) => screenshot.trim())
+    .filter((screenshot) => screenshot.length > 0);
 
 export const getYemaPTSeason = (title: string): number | null => {
   const season =
@@ -358,6 +398,9 @@ class YemaPT extends BaseFiller implements TargetFiller {
 
     const mediaInfo = info.mediaInfos?.[0];
     if (mediaInfo) fields.mediaInfo = mediaInfo;
+
+    const screenshotList = buildYemaPTScreenshotList(info.screenshots);
+    if (screenshotList.length > 0) fields.screenshotList = screenshotList;
 
     const season = getYemaPTSeason(info.title);
     if (season) fields.season = season;

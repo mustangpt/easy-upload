@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import {
   bbcodeToMarkdown,
+  buildYemaPTScreenshotList,
   getYemaPTPicture,
   getYemaPTOptionValue,
   getYemaPTSeason,
@@ -67,6 +68,25 @@ describe('YemaPT target filler helpers', () => {
     expect(prepareYemaPTDescription(malformedInfo)).toBe('简介');
   });
 
+  it('removes known screenshot images from long description', () => {
+    const screenshot = 'https://example.com/screenshot.jpg';
+    const otherImage = 'https://example.com/poster.jpg';
+
+    expect(
+      prepareYemaPTDescription({
+        description: [
+          '简介',
+          `[img=350x350]${screenshot}[/img]`,
+          `[url=https://example.com][img]${screenshot}[/img][/url]`,
+          screenshot,
+          `[img]${otherImage}[/img]`,
+        ].join('\n'),
+        mediaInfos: [],
+        screenshots: [screenshot],
+      }),
+    ).toBe(`简介\n[img]${otherImage}[/img]`);
+  });
+
   it('gets season number from common torrent title patterns', () => {
     expect(getYemaPTSeason('Show.Name.S02E03.1080p.WEB-DL')).toBe(2);
     expect(getYemaPTSeason('Show Name Season 03 2160p WEB-DL')).toBe(3);
@@ -106,5 +126,16 @@ describe('YemaPT target filler helpers', () => {
         screenshots: ['https://example.com/screenshot.jpg'],
       } as TorrentInfo.Info),
     ).toBe('https://example.com/poster.jpg');
+  });
+
+  it('builds YemaPT screenshotList from screenshot urls', () => {
+    expect(
+      buildYemaPTScreenshotList([
+        ' https://example.com/a.jpg ',
+        '',
+        '   ',
+        'https://example.com/b.jpg',
+      ]),
+    ).toEqual(['https://example.com/a.jpg', 'https://example.com/b.jpg']);
   });
 });
